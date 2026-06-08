@@ -9,12 +9,8 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 ::selection{background:#C8FF00;color:#0A0A0A;}
 body{font-family:'DM Mono',monospace;background:#0A0A0A;color:#F0EDE8;min-height:100vh;overflow-x:hidden;}
-
-/* NOISE */
 .noise{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.03;
 background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-
-/* NAV */
 nav{position:sticky;top:0;z-index:50;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);
 border-bottom:1px solid #1A1A1A;padding:1.2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;}
 .logo-btn{background:none;border:none;color:#F0EDE8;font-family:'DM Mono',monospace;cursor:pointer;text-align:left;}
@@ -22,8 +18,6 @@ border-bottom:1px solid #1A1A1A;padding:1.2rem 2.5rem;display:flex;justify-conte
 .logo-sub{font-size:0.6rem;letter-spacing:0.2em;color:#555;text-transform:uppercase;}
 .accent{color:#C8FF00;}
 .nav-right{display:flex;gap:1.5rem;align-items:center;}
-
-/* BUTTONS */
 .btn{font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;
 padding:0.7rem 1.6rem;border:1px solid currentColor;background:transparent;cursor:pointer;
 transition:all 0.2s ease;color:#F0EDE8;}
@@ -34,11 +28,7 @@ transition:all 0.2s ease;color:#F0EDE8;}
 .btn-danger:hover{background:#FF4444;color:#fff;}
 .btn-sm{font-size:0.65rem;padding:0.45rem 1rem;letter-spacing:0.1em;}
 .btn-ghost{background:none;border:none;padding:0;color:#F0EDE8;cursor:pointer;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;}
-
-/* VIEWS */
 .view{display:none;} .view.active{display:block;}
-
-/* HERO */
 .hero{padding:6rem 2.5rem 4rem;max-width:1200px;margin:0 auto;position:relative;overflow:hidden;}
 .hero-num{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,18vw,14rem);line-height:0.85;
 color:#1A1A1A;position:absolute;right:-1rem;top:-1rem;user-select:none;pointer-events:none;}
@@ -47,46 +37,28 @@ color:#1A1A1A;position:absolute;right:-1rem;top:-1rem;user-select:none;pointer-e
 .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,10vw,8rem);line-height:0.9;margin-bottom:2rem;letter-spacing:0.02em;}
 .hero-outline{-webkit-text-stroke:1px #C8FF00;color:transparent;}
 .hero-desc{font-family:'DM Sans',sans-serif;font-size:1rem;color:#888;max-width:480px;line-height:1.7;}
-
-/* STATS BAR */
-.stats-bar{border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A;
-padding:1.2rem 2.5rem;display:flex;gap:3rem;overflow-x:auto;}
+.stats-bar{border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A;padding:1.2rem 2.5rem;display:flex;gap:3rem;overflow-x:auto;}
 .stat-label{font-size:0.6rem;letter-spacing:0.15em;color:#555;text-transform:uppercase;margin-bottom:0.25rem;}
 .stat-val{font-size:0.9rem;color:#C8FF00;}
-
-/* PROJECTS SECTION */
 .projects-section{max-width:1400px;margin:0 auto;padding:3rem 2.5rem;}
 .section-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2rem;}
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.1em;}
 .section-count{font-size:0.65rem;color:#444;letter-spacing:0.1em;}
-
-/* EMPTY STATE */
 .empty-state{text-align:center;padding:5rem;color:#444;border:1px dashed #1E1E1E;}
 .empty-title{font-size:0.85rem;letter-spacing:0.1em;margin-bottom:0.5rem;}
 .empty-sub{font-size:0.7rem;color:#333;}
-
-/* PROJECTS GRID */
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1px;background:#1A1A1A;border:1px solid #1A1A1A;}
 @media(max-width:480px){.projects-grid{grid-template-columns:1fr;}}
-
-/* PROJECT CARD */
-.project-card{background:#0A0A0A;border:1px solid #1E1E1E;display:flex;flex-direction:column;
-position:relative;overflow:hidden;transition:border-color 0.3s,background 0.3s;}
+.project-card{background:#0A0A0A;border:1px solid #1E1E1E;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color 0.3s,background 0.3s;}
 .project-card:hover{background:#111;}
-.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 0.4s;}
+.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 0.4s;}
 .project-card:hover::before{transform:scaleX(1);}
-
-.preview-placeholder{width:100%;aspect-ratio:16/9;background:#111;border-bottom:1px solid #1E1E1E;
-display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;}
+.preview-placeholder{width:100%;aspect-ratio:16/9;background:#111;border-bottom:1px solid #1E1E1E;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;}
 .placeholder-icon{font-size:1.5rem;opacity:0.15;}
 .placeholder-text{font-size:0.6rem;letter-spacing:0.12em;color:#333;text-transform:uppercase;}
-
 .preview-wrap{position:relative;}
 .preview-pane{width:100%;aspect-ratio:16/9;border:none;background:#111;border-bottom:1px solid #1E1E1E;display:block;}
-.preview-overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;
-padding:0.75rem;background:linear-gradient(to top,rgba(10,10,10,0.53) 0%,transparent 50%);}
-
+.preview-overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:0.75rem;background:linear-gradient(to top,rgba(10,10,10,0.53) 0%,transparent 50%);}
 .card-body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
 .card-meta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;}
 .card-cat{font-size:0.6rem;letter-spacing:0.15em;color:#555;text-transform:uppercase;}
@@ -96,22 +68,16 @@ padding:0.75rem;background:linear-gradient(to top,rgba(10,10,10,0.53) 0%,transpa
 .card-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;}
 .tag{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.6rem;border:1px solid #2A2A2A;color:#888;}
 .card-link{font-size:0.65rem;letter-spacing:0.12em;text-decoration:none;text-transform:uppercase;margin-top:0.5rem;}
-
-/* FOOTER */
 footer{border-top:1px solid #1A1A1A;padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
 .footer-name{font-size:0.75rem;letter-spacing:0.08em;}
 .footer-co{font-size:0.65rem;letter-spacing:0.1em;color:#444;margin-left:0.5rem;}
 .footer-copy{font-size:0.6rem;letter-spacing:0.1em;color:#333;margin-top:0.2rem;}
-
-/* LOGIN */
 .login-wrap{max-width:400px;margin:10rem auto;padding:0 2rem;}
 .login-box{border:1px solid #1E1E1E;padding:3rem;}
 .login-eyebrow{font-size:0.65rem;letter-spacing:0.15em;color:#555;margin-bottom:0.5rem;}
 .login-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:0.05em;margin-bottom:2.5rem;}
 .login-hint{font-size:0.65rem;color:#333;margin-top:1.5rem;text-align:center;}
 .error-msg{font-size:0.75rem;color:#FF6B6B;margin-bottom:1rem;}
-
-/* ADMIN */
 .admin-wrap{max-width:1100px;margin:0 auto;padding:3rem 2.5rem;}
 .admin-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3rem;}
 .admin-eyebrow{font-size:0.65rem;letter-spacing:0.15em;color:#C8FF00;margin-bottom:0.5rem;}
@@ -122,19 +88,16 @@ footer{border-top:1px solid #1A1A1A;padding:2rem 2.5rem;display:flex;justify-con
 @media(max-width:700px){.grid-2{grid-template-columns:1fr;}}
 .field{margin-bottom:1rem;}
 label{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#666;display:block;margin-bottom:0.4rem;}
-.admin-input{width:100%;background:#111;border:1px solid #2A2A2A;color:#F0EDE8;padding:0.75rem 1rem;
-font-family:'DM Mono',monospace;font-size:0.85rem;outline:none;transition:border-color 0.2s;}
+.admin-input{width:100%;background:#111;border:1px solid #2A2A2A;color:#F0EDE8;padding:0.75rem 1rem;font-family:'DM Mono',monospace;font-size:0.85rem;outline:none;transition:border-color 0.2s;}
 .admin-input:focus{border-color:#C8FF00;}
 .admin-input::placeholder{color:#444;}
 textarea.admin-input{resize:vertical;}
 .color-row{display:flex;gap:0.75rem;align-items:center;}
 .color-swatch{width:24px;height:24px;border:2px solid transparent;cursor:pointer;border-radius:2px;}
 .color-swatch.selected{border-color:#fff;}
-.url-hint{margin-bottom:1.5rem;padding:0.75rem 1rem;background:#111;border:1px solid #1E1E1E;
-font-size:0.7rem;color:#555;letter-spacing:0.08em;}
+.url-hint{margin-bottom:1.5rem;padding:0.75rem 1rem;background:#111;border:1px solid #1E1E1E;font-size:0.7rem;color:#555;letter-spacing:0.08em;}
 .form-msg{font-size:0.8rem;margin-bottom:1rem;}
 .form-msg.ok{color:#C8FF00;} .form-msg.err{color:#FF6B6B;}
-
 .manage-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em;margin-bottom:1.5rem;}
 .project-list{display:flex;flex-direction:column;gap:1px;background:#1A1A1A;}
 .project-row{background:#0D0D0D;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;}
@@ -142,31 +105,24 @@ font-size:0.7rem;color:#555;letter-spacing:0.08em;}
 .row-name{font-size:0.9rem;font-weight:500;}
 .row-meta{font-size:0.65rem;color:#555;letter-spacing:0.08em;text-transform:uppercase;}
 .row-live{color:#C8FF00;margin-left:0.5rem;}
-
-/* MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;
-display:flex;align-items:center;justify-content:center;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:center;justify-content:center;}
 .modal-box{background:#111;border:1px solid #333;padding:2rem;width:380px;text-align:center;}
 .modal-danger{font-size:0.65rem;letter-spacing:0.15em;color:#FF4444;margin-bottom:1rem;}
 .modal-msg{font-family:'DM Sans',sans-serif;color:#888;margin-bottom:2rem;}
 .modal-btns{display:flex;gap:1rem;justify-content:center;}
-
-/* IFRAME MODAL */
-.iframe-bg{position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:200;
-display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;}
+.iframe-bg{position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;}
 .iframe-header{width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;}
 .iframe-cat{font-size:0.65rem;letter-spacing:0.15em;color:#555;text-transform:uppercase;}
 .iframe-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em;}
 .iframe-btns{display:flex;gap:0.75rem;}
 .iframe-frame{width:100%;max-width:1100px;height:75vh;border:1px solid #333;background:#fff;}
-
+.loading{text-align:center;padding:3rem;color:#555;font-size:0.75rem;letter-spacing:0.15em;}
 .hidden{display:none!important;}
 </style>
 </head>
 <body>
 <div class="noise"></div>
 
-<!-- NAV -->
 <nav>
   <button class="logo-btn" onclick="showView('home')">
     <div class="logo-name"><span class="accent">◈</span> Arunraj</div>
@@ -179,36 +135,29 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
   </div>
 </nav>
 
-<!-- HOME VIEW -->
+<!-- HOME -->
 <div class="view active" id="view-home">
   <main>
     <section class="hero">
       <div class="hero-num" id="hero-num">00</div>
       <div class="hero-inner">
         <p class="hero-eyebrow">Arunraj · Frontend Developer @ Pixeltech</p>
-        <h1 class="hero-title">
-          Crafting<br>
-          <span class="hero-outline">Digital</span><br>
-          Experiences
-        </h1>
+        <h1 class="hero-title">Crafting<br><span class="hero-outline">Digital</span><br>Experiences</h1>
         <p class="hero-desc">A curated selection of web projects — from e-commerce platforms to interactive dashboards. Built with precision and shipped with care.</p>
       </div>
     </section>
-
     <div class="stats-bar">
       <div><div class="stat-label">Projects</div><div class="stat-val" id="stat-count">0</div></div>
       <div><div class="stat-label">Stack</div><div class="stat-val">React / Vue / Node</div></div>
       <div><div class="stat-label">Status</div><div class="stat-val">Open to offers</div></div>
     </div>
-
     <section class="projects-section">
       <div class="section-header">
         <h2 class="section-title">Selected Work</h2>
         <span class="section-count" id="section-count">0 PROJECTS</span>
       </div>
-      <div id="projects-container"></div>
+      <div id="projects-container"><p class="loading">LOADING PROJECTS...</p></div>
     </section>
-
     <footer>
       <div>
         <span class="footer-name">Arunraj</span>
@@ -220,7 +169,7 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
   </main>
 </div>
 
-<!-- LOGIN VIEW -->
+<!-- LOGIN -->
 <div class="view hidden" id="view-login">
   <div class="login-wrap">
     <div class="login-box">
@@ -232,12 +181,12 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
       </div>
       <p class="error-msg hidden" id="login-error"></p>
       <button class="btn btn-accent" style="width:100%;margin-top:0.5rem;" onclick="doLogin()">Enter →</button>
-      <p class="login-hint">Enter your admin password to manage projects.</p>
+      <p class="login-hint">Admin access only.</p>
     </div>
   </div>
 </div>
 
-<!-- ADMIN VIEW -->
+<!-- ADMIN -->
 <div class="view hidden" id="view-admin">
   <div class="admin-wrap">
     <div class="admin-header">
@@ -247,53 +196,30 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
       </div>
       <button class="btn" onclick="doLogout()">Logout</button>
     </div>
-
     <div class="form-box">
       <h3 class="form-title">+ Add New Project</h3>
       <div class="grid-2">
-        <div class="field">
-          <label>Project Title *</label>
-          <input class="admin-input" id="f-title" placeholder="e.g. My Portfolio"/>
-        </div>
-        <div class="field">
-          <label>Category</label>
-          <input class="admin-input" id="f-cat" placeholder="e.g. E-Commerce, Dashboard…"/>
-        </div>
+        <div class="field"><label>Project Title *</label><input class="admin-input" id="f-title" placeholder="e.g. My Portfolio"/></div>
+        <div class="field"><label>Category</label><input class="admin-input" id="f-cat" placeholder="e.g. E-Commerce"/></div>
       </div>
-      <div class="field">
-        <label>Description *</label>
-        <textarea class="admin-input" id="f-desc" rows="3" placeholder="Brief description of the project…"></textarea>
+      <div class="field"><label>Description *</label><textarea class="admin-input" id="f-desc" rows="3" placeholder="Brief description…"></textarea></div>
+      <div class="grid-2">
+        <div class="field"><label>Tags (comma-separated)</label><input class="admin-input" id="f-tags" placeholder="React, Node.js"/></div>
+        <div class="field"><label>Year</label><input class="admin-input" id="f-year" placeholder="2025"/></div>
       </div>
       <div class="grid-2">
-        <div class="field">
-          <label>Tags (comma-separated)</label>
-          <input class="admin-input" id="f-tags" placeholder="React, Node.js, Stripe"/>
-        </div>
-        <div class="field">
-          <label>Year</label>
-          <input class="admin-input" id="f-year" placeholder="2024"/>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="field">
-          <label>Project URL (for live preview)</label>
-          <input class="admin-input" id="f-url" placeholder="https://yourproject.com" oninput="updateUrlHint()"/>
-        </div>
-        <div class="field">
-          <label>Accent Color</label>
+        <div class="field"><label>Project URL</label><input class="admin-input" id="f-url" placeholder="https://yourproject.com" oninput="updateUrlHint()"/></div>
+        <div class="field"><label>Accent Color</label>
           <div class="color-row">
-            <input type="color" id="f-color" value="#C8FF00"
-              style="width:44px;height:44px;border:1px solid #2A2A2A;background:none;cursor:pointer;padding:2px;"
-              oninput="syncSwatches()"/>
+            <input type="color" id="f-color" value="#C8FF00" style="width:44px;height:44px;border:1px solid #2A2A2A;background:none;cursor:pointer;padding:2px;" oninput="syncSwatches()"/>
             <div id="swatches"></div>
           </div>
         </div>
       </div>
       <div class="url-hint hidden" id="url-hint"></div>
       <p class="form-msg hidden" id="form-msg"></p>
-      <button class="btn btn-accent" onclick="addProject()">Add Project →</button>
+      <button class="btn btn-accent" id="add-btn" onclick="addProject()">Add Project →</button>
     </div>
-
     <div>
       <h3 class="manage-title" id="manage-title">Manage Projects (0)</h3>
       <p style="color:#444;font-size:0.85rem;" id="no-projects-msg">No projects yet. Add one above.</p>
@@ -302,7 +228,7 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
   </div>
 </div>
 
-<!-- DELETE CONFIRM MODAL -->
+<!-- DELETE MODAL -->
 <div class="modal-bg hidden" id="delete-modal" onclick="closeDeleteModal()">
   <div class="modal-box" onclick="event.stopPropagation()">
     <p class="modal-danger">⚠ CONFIRM DELETE</p>
@@ -314,7 +240,7 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
   </div>
 </div>
 
-<!-- IFRAME PREVIEW MODAL -->
+<!-- IFRAME MODAL -->
 <div class="iframe-bg hidden" id="iframe-modal" onclick="closeIframeModal()">
   <div class="iframe-header" onclick="event.stopPropagation()">
     <div>
@@ -322,43 +248,54 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;pad
       <div class="iframe-title" id="iframe-title"></div>
     </div>
     <div class="iframe-btns">
-      <a id="iframe-open" href="#" target="_blank" rel="noopener noreferrer"
-        class="btn btn-accent btn-sm" style="text-decoration:none;display:inline-block;">Open Site →</a>
+      <a id="iframe-open" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-accent btn-sm" style="text-decoration:none;display:inline-block;">Open Site →</a>
       <button class="btn btn-sm" onclick="closeIframeModal()">✕ Close</button>
     </div>
   </div>
-  <iframe id="iframe-frame" class="iframe-frame" title="" onclick="event.stopPropagation()"
-    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  <iframe id="iframe-frame" class="iframe-frame" title="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
 </div>
 
-<script>
-// ── STATE ────────────────────────────────────────────────
-// ✏️ ADD YOUR PROJECTS HERE — visitors will see these!
-let projects = [
-  // Example project — delete this and add your own below:
-  // {
-  //   id: 1,
-  //   title: "My Project",
-  //   category: "Web App",
-  //   description: "A short description of what this project does.",
-  //   tags: ["React", "Node.js"],
-  //   year: "2024",
-  //   url: "https://yourproject.com",
-  //   color: "#C8FF00"
-  // },
-];
-let isAuthed = false;
-let deleteTargetId = null;
-const ADMIN_PASSWORD = 'portfolio2026'; // ✏️ Change this to your own password!
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCthjj1sBspYOGGAX2-P8AiFp9v70RVIAk",
+  authDomain: "arunraj-portfolio.firebaseapp.com",
+  projectId: "arunraj-portfolio",
+  storageBucket: "arunraj-portfolio.firebasestorage.app",
+  messagingSenderId: "578558770076",
+  appId: "1:578558770076:web:1330b7349283c62c6a6659"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const ADMIN_PASSWORD = 'portfolio2026';
 const SWATCHES = ['#C8FF00','#FF6B35','#7B61FF','#00D4AA','#FF4444','#FFD700'];
 
-// ── INIT ─────────────────────────────────────────────────
+let projects = [];
+let isAuthed = false;
+let deleteTargetId = null;
+
 document.getElementById('year').textContent = new Date().getFullYear();
 buildSwatches();
-renderProjects();
+loadProjects();
 
-// ── VIEWS ────────────────────────────────────────────────
-function showView(name) {
+async function loadProjects() {
+  try {
+    const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderProjects();
+    if (isAuthed) renderAdminList();
+  } catch(e) {
+    document.getElementById('projects-container').innerHTML =
+      '<div class="empty-state"><p class="empty-title">Could not load projects</p><p class="empty-sub">' + e.message + '</p></div>';
+  }
+}
+
+window.showView = function(name) {
   document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.add('hidden'); });
   const el = document.getElementById('view-' + name);
   el.classList.remove('hidden'); el.classList.add('active');
@@ -366,8 +303,7 @@ function showView(name) {
   if (name === 'login') document.getElementById('pass-input').value = '';
 }
 
-// ── AUTH ─────────────────────────────────────────────────
-function doLogin() {
+window.doLogin = function() {
   const val = document.getElementById('pass-input').value;
   const err = document.getElementById('login-error');
   if (val === ADMIN_PASSWORD) {
@@ -383,172 +319,158 @@ function doLogin() {
     err.classList.remove('hidden');
   }
 }
-function doLogout() {
+
+window.doLogout = function() {
   isAuthed = false;
   document.getElementById('nav-login').classList.remove('hidden');
   document.getElementById('nav-admin').classList.add('hidden');
   showView('home');
 }
 
-// ── SWATCHES ──────────────────────────────────────────────
 function buildSwatches() {
   const wrap = document.getElementById('swatches');
-  wrap.style.display = 'flex'; wrap.style.gap = '0.5rem';
+  wrap.style.cssText = 'display:flex;gap:0.5rem;';
   SWATCHES.forEach(c => {
     const b = document.createElement('button');
-    b.className = 'color-swatch'; b.style.background = c;
+    b.className = 'color-swatch';
+    b.style.background = c;
     b.setAttribute('data-color', c);
     b.onclick = () => { document.getElementById('f-color').value = c; syncSwatches(); };
     wrap.appendChild(b);
   });
   syncSwatches();
 }
+
 function syncSwatches() {
   const cur = document.getElementById('f-color').value;
   document.querySelectorAll('.color-swatch').forEach(b => {
     b.classList.toggle('selected', b.getAttribute('data-color') === cur);
   });
 }
+window.syncSwatches = syncSwatches;
 
-// ── URL HINT ──────────────────────────────────────────────
-function updateUrlHint() {
+window.updateUrlHint = function() {
   const url = document.getElementById('f-url').value;
   const hint = document.getElementById('url-hint');
-  try { new URL(url); hint.innerHTML = '◈ Live preview will load from: <span style="color:#C8FF00">'+url+'</span>'; hint.classList.remove('hidden'); }
+  try { new URL(url); hint.innerHTML = '◈ Preview: <span style="color:#C8FF00">' + url + '</span>'; hint.classList.remove('hidden'); }
   catch { hint.classList.add('hidden'); }
 }
 
-// ── ADD PROJECT ───────────────────────────────────────────
-function addProject() {
+window.addProject = async function() {
   const title = document.getElementById('f-title').value.trim();
   const desc  = document.getElementById('f-desc').value.trim();
   const msg   = document.getElementById('form-msg');
-  if (!title || !desc) { msg.textContent = 'Title and description are required.'; msg.className = 'form-msg err'; msg.classList.remove('hidden'); return; }
-  const tags = document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
-  const p = {
-    id: Date.now(),
-    title,
-    category: document.getElementById('f-cat').value.trim(),
-    description: desc,
-    tags,
-    year: document.getElementById('f-year').value.trim() || new Date().getFullYear(),
-    url: document.getElementById('f-url').value.trim(),
-    color: document.getElementById('f-color').value,
-  };
-  projects.unshift(p);
-  saveProjects();
-  renderProjects();
-  renderAdminList();
-  // reset form
-  ['f-title','f-cat','f-desc','f-tags','f-url'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-color').value = '#C8FF00'; syncSwatches();
-  document.getElementById('url-hint').classList.add('hidden');
-  msg.textContent = '✓ Project added successfully!'; msg.className = 'form-msg ok'; msg.classList.remove('hidden');
-  setTimeout(() => msg.classList.add('hidden'), 3000);
+  if (!title || !desc) {
+    msg.textContent = 'Title and description are required.';
+    msg.className = 'form-msg err';
+    msg.classList.remove('hidden');
+    return;
+  }
+  const btn = document.getElementById('add-btn');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  try {
+    const tags = document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+    await addDoc(collection(db, 'projects'), {
+      title,
+      category: document.getElementById('f-cat').value.trim(),
+      description: desc,
+      tags,
+      year: document.getElementById('f-year').value.trim() || String(new Date().getFullYear()),
+      url: document.getElementById('f-url').value.trim(),
+      color: document.getElementById('f-color').value,
+      createdAt: Date.now()
+    });
+    await loadProjects();
+    ['f-title','f-cat','f-desc','f-tags','f-url'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-color').value = '#C8FF00';
+    syncSwatches();
+    document.getElementById('url-hint').classList.add('hidden');
+    msg.textContent = '✓ Project added successfully!';
+    msg.className = 'form-msg ok';
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 3000);
+  } catch(e) {
+    msg.textContent = 'Error: ' + e.message;
+    msg.className = 'form-msg err';
+    msg.classList.remove('hidden');
+  }
+  btn.textContent = 'Add Project →'; btn.disabled = false;
 }
 
-// ── SAVE ─────────────────────────────────────────────────
-// Projects are hardcoded in the file above — no localStorage needed.
-// To add a project permanently: add it to the `projects` array above and commit to GitHub.
-function saveProjects() {
-  // no-op
-}
-
-// ── RENDER HOME ───────────────────────────────────────────
 function renderProjects() {
   const cnt = document.getElementById('projects-container');
-  document.getElementById('hero-num').textContent = String(projects.length).padStart(2,'0');
+  document.getElementById('hero-num').textContent = String(projects.length).padStart(2, '0');
   document.getElementById('stat-count').textContent = projects.length;
   document.getElementById('section-count').textContent = projects.length + ' PROJECTS';
   if (projects.length === 0) {
     cnt.innerHTML = '<div class="empty-state"><p class="empty-title">NO PROJECTS YET</p><p class="empty-sub">Login as admin to add your work</p></div>';
     return;
   }
-  const grid = document.createElement('div'); grid.className = 'projects-grid';
+  const grid = document.createElement('div');
+  grid.className = 'projects-grid';
   projects.forEach((p, i) => {
     const card = document.createElement('div');
     card.className = 'project-card';
-    card.style.cssText = '--accent:'+p.color+';animation:reveal 0.6s ease '+( i*0.08)+'s both;';
-    let previewHtml = '';
+    card.style.cssText = '--accent:' + p.color + ';animation:reveal 0.6s ease ' + (i * 0.08) + 's both;';
     let validUrl = false;
     try { new URL(p.url); validUrl = true; } catch {}
-    if (validUrl) {
-      previewHtml = `<div class="preview-wrap">
-        <iframe src="${escHtml(p.url)}" class="preview-pane" title="${escHtml(p.title)}" sandbox="allow-scripts allow-same-origin" scrolling="no"></iframe>
-        <div class="preview-overlay">
-          <button class="btn btn-sm" style="border-color:rgba(255,255,255,0.27);color:#fff;background:rgba(0,0,0,0.53);backdrop-filter:blur(6px);"
-            onclick="openIframe('${escJs(p.url)}','${escJs(p.title)}','${escJs(p.category||'')}')">⛶ Expand</button>
-        </div></div>`;
-    } else {
-      previewHtml = `<div class="preview-placeholder"><span class="placeholder-icon">◈</span><span class="placeholder-text">No URL added</span></div>`;
-    }
-    const tagsHtml = (p.tags||[]).map(t=>`<span class="tag">${escHtml(t)}</span>`).join('');
+    const previewHtml = validUrl
+      ? `<div class="preview-wrap"><iframe src="${escHtml(p.url)}" class="preview-pane" title="${escHtml(p.title)}" sandbox="allow-scripts allow-same-origin" scrolling="no"></iframe><div class="preview-overlay"><button class="btn btn-sm" style="border-color:rgba(255,255,255,0.27);color:#fff;background:rgba(0,0,0,0.53);backdrop-filter:blur(6px);" onclick="openIframe('${escJs(p.url)}','${escJs(p.title)}','${escJs(p.category||'')}')">⛶ Expand</button></div></div>`
+      : `<div class="preview-placeholder"><span class="placeholder-icon">◈</span><span class="placeholder-text">No URL added</span></div>`;
+    const tagsHtml = (p.tags || []).map(t => `<span class="tag">${escHtml(t)}</span>`).join('');
     const linkHtml = validUrl ? `<a href="${escHtml(p.url)}" target="_blank" rel="noopener noreferrer" class="card-link" style="color:${p.color}">Open Live Site →</a>` : '';
-    card.innerHTML = previewHtml + `
-      <div class="card-body">
-        <div class="card-meta">
-          <div><div class="card-cat">${escHtml(p.category||'')}</div><h3 class="card-title">${escHtml(p.title)}</h3></div>
-          <span class="card-year">${escHtml(String(p.year||''))}</span>
-        </div>
-        <p class="card-desc">${escHtml(p.description)}</p>
-        <div class="card-tags">${tagsHtml}</div>
-        ${linkHtml}
-      </div>`;
+    card.innerHTML = previewHtml + `<div class="card-body"><div class="card-meta"><div><div class="card-cat">${escHtml(p.category||'')}</div><h3 class="card-title">${escHtml(p.title)}</h3></div><span class="card-year">${escHtml(String(p.year||''))}</span></div><p class="card-desc">${escHtml(p.description)}</p><div class="card-tags">${tagsHtml}</div>${linkHtml}</div>`;
     grid.appendChild(card);
   });
   cnt.innerHTML = '';
   cnt.appendChild(grid);
 }
 
-// ── RENDER ADMIN LIST ─────────────────────────────────────
 function renderAdminList() {
   const list = document.getElementById('project-list');
   const noMsg = document.getElementById('no-projects-msg');
-  document.getElementById('manage-title').textContent = 'Manage Projects ('+projects.length+')';
+  document.getElementById('manage-title').textContent = 'Manage Projects (' + projects.length + ')';
   if (projects.length === 0) { list.classList.add('hidden'); noMsg.classList.remove('hidden'); return; }
   noMsg.classList.add('hidden'); list.classList.remove('hidden');
   list.innerHTML = '';
   projects.forEach(p => {
     let validUrl = false; try { new URL(p.url); validUrl = true; } catch {}
-    const row = document.createElement('div'); row.className = 'project-row';
-    row.innerHTML = `<div style="display:flex;align-items:center;gap:1rem;flex:1;">
-      <div class="row-dot" style="background:${p.color}"></div>
-      <div>
-        <div class="row-name">${escHtml(p.title)}</div>
-        <div class="row-meta">${escHtml(p.category||'')} · ${escHtml(String(p.year||''))}${validUrl?'<span class="row-live">· Live Preview ✓</span>':''}</div>
-      </div>
-    </div>
-    <button class="btn btn-danger" onclick="openDeleteModal(${p.id},'${escJs(p.title)}')">Delete</button>`;
+    const row = document.createElement('div');
+    row.className = 'project-row';
+    row.innerHTML = `<div style="display:flex;align-items:center;gap:1rem;flex:1;"><div class="row-dot" style="background:${p.color}"></div><div><div class="row-name">${escHtml(p.title)}</div><div class="row-meta">${escHtml(p.category||'')} · ${escHtml(String(p.year||''))}${validUrl ? '<span class="row-live">· Live ✓</span>' : ''}</div></div></div><button class="btn btn-danger" onclick="openDeleteModal('${escJs(p.id)}','${escJs(p.title)}')">Delete</button>`;
     list.appendChild(row);
   });
 }
 
-// ── DELETE ────────────────────────────────────────────────
-function openDeleteModal(id, title) {
+window.openDeleteModal = function(id, title) {
   deleteTargetId = id;
-  document.getElementById('delete-msg').textContent = 'Remove "'+title+'"? This can\'t be undone.';
+  document.getElementById('delete-msg').textContent = 'Remove "' + title + '"? This cannot be undone.';
   document.getElementById('delete-modal').classList.remove('hidden');
 }
-function closeDeleteModal() { document.getElementById('delete-modal').classList.add('hidden'); deleteTargetId = null; }
-function confirmDelete() {
-  projects = projects.filter(p => p.id !== deleteTargetId);
-  saveProjects(); renderProjects(); renderAdminList(); closeDeleteModal();
+window.closeDeleteModal = function() {
+  document.getElementById('delete-modal').classList.add('hidden');
+  deleteTargetId = null;
+}
+window.confirmDelete = async function() {
+  try {
+    await deleteDoc(doc(db, 'projects', deleteTargetId));
+    await loadProjects();
+    closeDeleteModal();
+  } catch(e) { alert('Delete failed: ' + e.message); }
 }
 
-// ── IFRAME MODAL ──────────────────────────────────────────
-function openIframe(url, title, cat) {
+window.openIframe = function(url, title, cat) {
   document.getElementById('iframe-cat').textContent = cat;
   document.getElementById('iframe-title').textContent = title;
   document.getElementById('iframe-open').href = url;
   document.getElementById('iframe-frame').src = url;
   document.getElementById('iframe-modal').classList.remove('hidden');
 }
-function closeIframeModal() {
+window.closeIframeModal = function() {
   document.getElementById('iframe-modal').classList.add('hidden');
   document.getElementById('iframe-frame').src = '';
 }
 
-// ── HELPERS ───────────────────────────────────────────────
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escJs(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 </script>
