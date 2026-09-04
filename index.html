@@ -28,7 +28,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 40px;
+      padding: 15px 40px;
       background: #111;
       color: white;
       position: sticky;
@@ -37,8 +37,16 @@
     }
 
     .logo {
-      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
       font-weight: 700;
+    }
+
+    .logo img {
+      height: 42px;
+      width: auto;
     }
 
     nav a {
@@ -252,7 +260,10 @@
 
   <!-- Header -->
   <header>
-    <div class="logo">Pixeltech</div>
+    <div class="logo">
+      <img src="images/logo.png" alt="Pixeltech Logo">
+      <span>Pixeltech</span>
+    </div>
     <nav>
       <a href="#work">Work</a>
       <a href="#services">Services</a>
