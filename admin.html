@@ -10,7 +10,60 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{--ink:#17251f;--green:#167a50;--lime:#d9ff6e;--cream:#f7f7f1;--muted:#607067;--line:#dbe1da;--orange:#fb8159}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,Arial,sans-serif}.shell{width:min(1120px,calc(100% - 48px));margin:auto}.brand{font-size:24px;font-weight:800;letter-spacing:-1.5px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px}.brand-mark{width:25px;height:25px;background:var(--green);border-radius:50% 50% 50% 4px;transform:rotate(-45deg)}header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.back{color:var(--muted);font-size:13px;font-weight:700;text-decoration:none}.back:hover{color:var(--green)}.eyebrow{font:500 11px "DM Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--green);display:flex;gap:9px;align-items:center}.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange)}.login-shell{min-height:calc(100vh - 79px);display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:center}.login-copy h1{font-size:clamp(44px,6vw,72px);line-height:1;letter-spacing:-.07em;margin:20px 0}.login-copy p{max-width:470px;color:var(--muted);font-size:16px;line-height:1.7}.login-card,.manager-card{background:#fff;border:1px solid var(--line);padding:35px}.login-card h2{font-size:26px;letter-spacing:-1px;margin:0 0 6px}.login-card p{font-size:13px;color:var(--muted);margin:0 0 24px}.form{display:grid;gap:13px}.form label{font:500 11px "DM Mono",monospace;text-transform:uppercase;letter-spacing:.07em}.form input{font:14px Manrope,sans-serif;padding:13px;border:1px solid #bec9c0;width:100%}.button{border:0;border-radius:4px;background:var(--green);padding:14px 20px;color:#fff;font:700 13px Manrope,sans-serif;cursor:pointer}.button:hover{background:#0d603d}.login-note{border-top:1px solid var(--line);padding-top:17px;font-size:12px;color:var(--muted);line-height:1.6}.login-error{display:none;margin:2px 0 0;padding:10px 12px;background:#fff0eb;color:#a34024;font-size:12px;font-weight:700}.manager{display:none;padding:48px 0 90px}.topline{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:37px}.topline h1{font-size:42px;letter-spacing:-2px;margin:12px 0 0}.signed-in{font-size:12px;color:var(--muted)}.signed-in button{border:0;background:transparent;text-decoration:underline;color:var(--green);cursor:pointer;font:inherit}.manager-grid{display:grid;grid-template-columns:1fr .9fr;gap:24px}.manager-card h2{font-size:20px;letter-spacing:-.8px;margin:0 0 8px}.manager-card>p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 24px}.pair-inputs{display:grid;grid-template-columns:1fr 1fr;gap:14px}.dropzone{min-height:178px;padding:20px;border:1px dashed #9fb0a4;background:#f9fbf8;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer}.dropzone strong{font-size:13px}.dropzone span{font-size:11px;color:var(--muted);margin-top:5px}.dropzone input{display:none}.publish{margin-top:18px;width:100%}.gallery-list{display:grid;gap:13px}.gallery-item{display:grid;grid-template-columns:76px 76px 1fr;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:13px}.thumbnail{height:56px;background:#e6ede7;display:grid;place-items:center;overflow:hidden;font:10px "DM Mono",monospace;color:var(--muted)}.thumbnail img{width:100%;height:100%;object-fit:cover}.gallery-item strong{font-size:13px;display:block}.gallery-item span{font-size:11px;color:var(--muted)}.empty{padding:18px;background:#f6f8f5;font-size:13px;color:var(--muted)}.success{display:none;margin-top:14px;padding:12px;background:#e7f6d2;color:#285337;font-size:12px;font-weight:700}@media(max-width:760px){.shell{width:min(100% - 32px,1120px)}.login-shell,.manager-grid{grid-template-columns:1fr;gap:30px}.login-shell{padding:50px 0}.topline{align-items:flex-start;flex-direction:column}.pair-inputs{grid-template-columns:1fr}.manager-card,.login-card{padding:24px}}
+    :root{--ink:#17251f;--green:#167a50;--lime:#d9ff6e;--cream:#f7f7f1;--muted:#607067;--line:#dbe1da;--orange:#fb8159}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,Arial,sans-serif}
+    .shell{width:min(1120px,calc(100% - 48px));margin:auto}
+    .brand{font-size:24px;font-weight:800;letter-spacing:-1.5px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px}
+    .brand-mark{width:25px;height:25px;background:var(--green);border-radius:50% 50% 50% 4px;transform:rotate(-45deg)}
+    header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+    .back{color:var(--muted);font-size:13px;font-weight:700;text-decoration:none}
+    .back:hover{color:var(--green)}
+    .eyebrow{font:500 11px "DM Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--green);display:flex;gap:9px;align-items:center}
+    .eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange)}
+    .login-shell{min-height:calc(100vh - 79px);display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:center}
+    .login-copy h1{font-size:clamp(44px,6vw,72px);line-height:1;letter-spacing:-.07em;margin:20px 0}
+    .login-copy p{max-width:470px;color:var(--muted);font-size:16px;line-height:1.7}
+    .login-card,.manager-card{background:#fff;border:1px solid var(--line);padding:35px}
+    .login-card h2{font-size:26px;letter-spacing:-1px;margin:0 0 6px}
+    .login-card p{font-size:13px;color:var(--muted);margin:0 0 24px}
+    .form{display:grid;gap:13px}
+    .form label{font:500 11px "DM Mono",monospace;text-transform:uppercase;letter-spacing:.07em}
+    .form input{font:14px Manrope,sans-serif;padding:13px;border:1px solid #bec9c0;width:100%}
+    .button{border:0;border-radius:4px;background:var(--green);padding:14px 20px;color:#fff;font:700 13px Manrope,sans-serif;cursor:pointer}
+    .button:hover{background:#0d603d}
+    .login-note{border-top:1px solid var(--line);padding-top:17px;font-size:12px;color:var(--muted);line-height:1.6}
+    .login-error{display:none;margin:2px 0 0;padding:10px 12px;background:#fff0eb;color:#a34024;font-size:12px;font-weight:700}
+    .manager{display:none;padding:48px 0 90px}
+    .topline{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:37px}
+    .topline h1{font-size:42px;letter-spacing:-2px;margin:12px 0 0}
+    .signed-in{font-size:12px;color:var(--muted)}
+    .signed-in button{border:0;background:transparent;text-decoration:underline;color:var(--green);cursor:pointer;font:inherit}
+    .manager-grid{display:grid;grid-template-columns:1fr .9fr;gap:24px}
+    .manager-card h2{font-size:20px;letter-spacing:-.8px;margin:0 0 8px}
+    .manager-card>p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 24px}
+    .pair-inputs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .dropzone{min-height:178px;padding:20px;border:1px dashed #9fb0a4;background:#f9fbf8;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer}
+    .dropzone strong{font-size:13px}
+    .dropzone span{font-size:11px;color:var(--muted);margin-top:5px}
+    .dropzone input{display:none}
+    .publish{margin-top:18px;width:100%}
+    .gallery-list{display:grid;gap:13px}
+    .gallery-item{display:grid;grid-template-columns:76px 76px 1fr;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:13px}
+    .thumbnail{height:56px;background:#e6ede7;display:grid;place-items:center;overflow:hidden;font:10px "DM Mono",monospace;color:var(--muted)}
+    .thumbnail img{width:100%;height:100%;object-fit:cover}
+    .gallery-item strong{font-size:13px;display:block}
+    .gallery-item span{font-size:11px;color:var(--muted)}
+    .empty{padding:18px;background:#f6f8f5;font-size:13px;color:var(--muted)}
+    .success{display:none;margin-top:14px;padding:12px;background:#e7f6d2;color:#285337;font-size:12px;font-weight:700}
+    @media(max-width:760px){
+      .shell{width:min(100% - 32px,1120px)}
+      .login-shell,.manager-grid{grid-template-columns:1fr;gap:30px}
+      .login-shell{padding:50px 0}
+      .topline{align-items:flex-start;flex-direction:column}
+      .pair-inputs{grid-template-columns:1fr}
+      .manager-card,.login-card{padding:24px}
+    }
   </style>
 </head>
 <body>
@@ -102,7 +155,7 @@
   </main>
 
   <script>
-    const ADMIN_EMAIL = 'admin@pixeltech.com';
+    const ADMIN_EMAIL = 'arunrajac3sac@gmail.com';
     const ADMIN_PASSWORD = 'PixeltechAdmin!';
 
     const loginView = document.getElementById('login-view');
