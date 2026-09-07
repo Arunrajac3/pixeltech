@@ -65,16 +65,45 @@
       color: #60a5fa;
     }
 
-    /* Hero */
+    /* Hero Section (Updated for Video Background) */
     .hero {
+      position: relative; /* Video absolute ஆக இருக்க இது தேவை */
       height: 85vh;
-      background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), 
-                  url('images/hero.jpg') center/cover no-repeat;
+      overflow: hidden; /* Video வெளியே வராமல் தடுக்க */
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       color: white;
+      background: #111; /* லோடிங் பேக்அப் கலர் */
+    }
+
+    /* Background Video Style */
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* வீடியோவை முழுமையாக ஃபிட் செய்ய */
+      z-index: 1;
+    }
+
+    /* Dark Overlay for Text Readability */
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)); /* வீடியோவிற்கு மேல் ஒரு கருப்பு லேயர் */
+      z-index: 2;
+    }
+
+    /* Hero Content Style */
+    .hero-content {
+      position: relative;
+      z-index: 3; /* வீடியோ மற்றும் ஓவர்லே-க்கு மேல் கொண்டு வர */
     }
 
     .hero h1 {
@@ -276,8 +305,17 @@
     </nav>
   </header>
 
-  <!-- Hero -->
+  <!-- Hero Section with Autoplay Video -->
   <section class="hero">
+    <!-- Video element (Note: Update 'videos/hero-bg.mp4' with your actual video path) -->
+    <video autoplay muted loop playsinline poster="images/hero.jpg" class="hero-video">
+      <source src="https://www.youtube.com/watch?v=TWXNi3pC0zM&pp=ygUacmVhbCBlc3RhdGUgZXh0ZXJpb3IgdmlkZW_SBwkJGwwBhyohjO8%3D" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    
+    <!-- Dark overlay for better contrast -->
+    <div class="hero-overlay"></div>
+
     <div class="hero-content">
       <h1>Pixeltech</h1>
       <p class="tagline">You Shoot. We Polish.</p>
