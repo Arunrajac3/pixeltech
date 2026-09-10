@@ -15,7 +15,7 @@
     body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,Arial,sans-serif}
     .shell{width:min(1120px,calc(100% - 48px));margin:auto}
     .brand{font-size:24px;font-weight:800;letter-spacing:-1.5px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px}
-    .brand-mark{width:25px;height:25px;background:var(--green);border-radius:50% 50% 50% 4px;transform:rotate(-45deg)}
+    .brand-logo{width:34px;height:34px;object-fit:cover;object-position:center;border-radius:3px}
     header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .back{color:var(--muted);font-size:13px;font-weight:700;text-decoration:none}
     .back:hover{color:var(--green)}
@@ -68,7 +68,7 @@
 </head>
 <body>
   <header class="shell">
-    <a class="brand" href="index.html"><i class="brand-mark"></i>pixeltech</a>
+    <a class="brand" href="index.html"><img class="brand-logo" src="images/logo.png" alt="">pixeltech</a>
     <a class="back" href="index.html">← Back to website</a>
   </header>
 
