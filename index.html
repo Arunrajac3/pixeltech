@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixeltech | Professional Web Development</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b; background: #fff; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header */
+    header { background: #0f172a; color: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; font-size: 1.3rem; font-weight: 700; }
+    .logo img { height: 38px; width: 38px; border-radius: 50%; object-fit: cover; background: white; }
+    nav { display: flex; align-items: center; gap: 28px; }
+    nav a { color: #cbd5e1; text-decoration: none; font-size: 0.95rem; transition: 0.2s; cursor: pointer; }
+    nav a:hover { color: white; }
+    .btn-login { background: #3b82f6; color: white !important; padding: 8px 16px; border-radius: 6px; font-weight: 500; }
+    .btn-login:hover { background: #2563eb; }
+    .menu-toggle { display: none; font-size: 1.4rem; cursor: pointer; }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); color: white; padding: 110px 0 100px; text-align: center; }
+    .eyebrow { text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; color: #93c5fd; margin-bottom: 16px; }
+    .hero h1 { font-size: 3.1rem; line-height: 1.2; margin-bottom: 20px; font-weight: 700; }
+    .subtitle { font-size: 1.15rem; color: #cbd5e1; max-width: 600px; margin: 0 auto 35px; }
+    .hero-btns { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.25s; border: none; cursor: pointer; }
+    .btn.primary { background: #3b82f6; color: white; }
+    .btn.primary:hover { background: #2563eb; }
+    .btn.secondary { background: transparent; color: white; border: 2px solid #64748b; }
+    .btn.secondary:hover { border-color: white; }
+    .btn.outline { background: transparent; color: #3b82f6; border: 2px solid #3b82f6; }
+    .btn.outline:hover { background: #3b82f6; color: white; }
+
+    /* Sections */
+    .section-header { text-align: center; margin-bottom: 50px; }
+    .section-header h2 { font-size: 2.1rem; margin-bottom: 10px; color: #0f172a; }
+    .section-header p { color: #64748b; font-size: 1.05rem; }
+
+    /* Services */
+    .services { padding: 90px 0; background: #f8fafc; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+    .service-card { background: white; padding: 35px 28px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.3s; }
+    .service-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
+    .service-card .icon { width: 50px; height: 50px; background: #eff6ff; color: #3b82f6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 18px; }
+    .service-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .service-card p { color: #64748b; font-size: 0.95rem; }
+
+    /* Portfolio */
+    .portfolio { padding: 90px 0; }
+    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+    .portfolio-item { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); background: white; transition: 0.3s; }
+    .portfolio-item:hover { transform: translateY(-5px); }
+    .portfolio-img { height: 180px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; }
+    .portfolio-img .placeholder { color: #94a3b8; font-weight: 600; font-size: 1.1rem; }
+    .portfolio-info { padding: 18px 20px; }
+    .portfolio-info h3 { font-size: 1.1rem; margin-bottom: 4px; }
+    .portfolio-info p { color: #64748b; font-size: 0.9rem; }
+
+    /* Pricing */
+    .pricing { padding: 90px 0; background: #f8fafc; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
+    .price-card { background: white; border-radius: 14px; padding: 35px 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; }
+    .price-card.popular { border: 2px solid #3b82f6; transform: scale(1.03); }
+    .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #3b82f6; color: white; font-size: 0.75rem; padding: 4px 14px; border-radius: 20px; font-weight: 600; }
+    .price-card h3 { font-size: 1.3rem; margin-bottom: 10px; }
+    .price { font-size: 2.4rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .price-desc { color: #64748b; font-size: 0.9rem; margin-bottom: 22px; }
+    .price-card ul { list-style: none; margin-bottom: 28px; flex-grow: 1; }
+    .price-card ul li { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; color: #475569; }
+    .price-card ul li:before { content: "✓ "; color: #22c55e; font-weight: bold; }
+    .extra-pricing { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+    .extra-pricing h3 { margin-bottom: 20px; text-align: center; }
+    .extra-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .extra-item { display: flex; justify-content: space-between; padding: 14px 18px; background: #f8fafc; border-radius: 8px; font-size: 0.95rem; }
+
+    /* Contact */
+    .contact { padding: 90px 0; }
+    .contact-wrapper { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: start; }
+    .contact-form { background: #f8fafc; padding: 35px; border-radius: 12px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .contact-form input, .contact-form select, .contact-form textarea { width: 100%; padding: 13px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; font-family: inherit; background: white; }
+    .contact-form textarea { margin-bottom: 20px; resize: vertical; }
+    .contact-info { padding: 20px 0; }
+    .contact-info h3 { margin-bottom: 20px; }
+    .contact-info p { margin-bottom: 14px; color: #475569; display: flex; align-items: center; gap: 10px; }
+    .contact-info i { color: #3b82f6; width: 20px; }
+
+    /* Footer */
+    footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 25px 0; font-size: 0.9rem; }
+
+    /* Admin Login Overlay */
+    #adminLogin {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.92);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    #adminLogin.active { display: flex; }
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .login-box h2 { text-align: center; margin-bottom: 8px; color: #0f172a; }
+    .login-box p { text-align: center; color: #64748b; margin-bottom: 30px; font-size: 0.95rem; }
+    .login-box input { width: 100%; padding: 13px 16px; margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; }
+    .login-box button { width: 100%; padding: 14px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    .login-box button:hover { background: #2563eb; }
+    .close-login { display: block; text-align: center; margin-top: 20px; color: #64748b; cursor: pointer; font-size: 0.9rem; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      nav { display: none; position: absolute; top: 70px; left: 0; right: 0; background: #0f172a; flex-direction: column; padding: 20px; gap: 15px; }
+      nav.active { display: flex; }
+      .hero h1 { font-size: 2.2rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .contact-wrapper { grid-template-columns: 1fr; }
+      .price-card.popular { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="logo" onclick="showHome()">
+        <img src="images/logo.png" alt="Pixeltech">
+        <span>Pixeltech</span>
+      </a>
+      <nav id="mainNav">
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+        <a class="btn-login" onclick="showAdminLogin()">Admin</a>
+      </nav>
+      <div class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div id="publicContent">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <p class="eyebrow">Web Development Agency</p>
+          <h1>We Build Fast, Modern<br>& High-Converting Websites</h1>
+          <p class="subtitle">From landing pages to full business websites — clean code, professional design, and results that matter.</p>
+          <div class="hero-btns">
+            <a href="#pricing" class="btn primary">View Pricing</a>
+            <a href="#portfolio" class="btn secondary">See Our Work</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="services">
+      <div class="container">
+        <div class="section-header">
+          <h2>What We Offer</h2>
+          <p>Complete web solutions for businesses and individuals</p>
+        </div>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="icon"><i class="fas fa-rocket"></i></div>
+            <h3>Landing Pages</h3>
+            <p>High-converting single page websites designed to generate leads and sales.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon"><i class="fas fa-laptop-code"></i></div>
+            <h3>Business Websites</h3>
+            <p>Professional multi-page websites for companies, startups and local businesses.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon"><i class="fas fa-shopping-cart"></i></div>
+            <h3>E-Commerce</h3>
+            <p>Online stores with product listings, cart, and payment integration.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+            <h3>Responsive Design</h3>
+            <p>Pixel-perfect websites that look great on mobile, tablet and desktop.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon"><i class="fas fa-search"></i></div>
+            <h3>SEO Friendly</h3>
+            <p>Clean code structure and basic SEO setup so you can rank better.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon"><i class="fas fa-headset"></i></div>
+            <h3>Support & Maintenance</h3>
+            <p>Ongoing support, updates and small changes after project delivery.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section id="portfolio" class="portfolio">
+      <div class="container">
+        <div class="section-header">
+          <h2>Selected Work</h2>
+          <p>Some of the websites we have built</p>
+        </div>
+        <div class="portfolio-grid">
+          <div class="portfolio-item">
+            <div class="portfolio-img"><div class="placeholder">Project 1</div></div>
+            <div class="portfolio-info">
+              <h3>Business Website</h3>
+              <p>Corporate website with modern design</p>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-img"><div class="placeholder">Project 2</div></div>
+            <div class="portfolio-info">
+              <h3>Landing Page</h3>
+              <p>High converting product launch page</p>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-img"><div class="placeholder">Project 3</div></div>
+            <div class="portfolio-info">
+              <h3>Portfolio Website</h3>
+              <p>Personal portfolio for creative professional</p>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-img"><div class="placeholder">Project 4</div></div>
+            <div class="portfolio-info">
+              <h3>Service Website</h3>
+              <p>Local business service website</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing">
+      <div class="container">
+        <div class="section-header">
+          <h2>Transparent Pricing</h2>
+          <p>Simple packages. No hidden costs.</p>
+        </div>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <h3>Landing Page</h3>
+            <div class="price">₹5,999</div>
+            <p class="price-desc">Perfect for product or service promotion</p>
+            <ul>
+              <li>1 Page Design</li>
+              <li>Mobile Responsive</li>
+              <li>Contact Form</li>
+              <li>Basic SEO</li>
+              <li>3 Revisions</li>
+              <li>Delivery in 5-7 days</li>
+            </ul>
+            <a href="#contact" class="btn outline">Get Started</a>
+          </div>
+          <div class="price-card popular">
+            <div class="badge">Most Popular</div>
+            <h3>Business Website</h3>
+            <div class="price">₹14,999</div>
+            <p class="price-desc">Ideal for growing businesses</p>
+            <ul>
+              <li>5-7 Pages</li>
+              <li>Mobile Responsive</li>
+              <li>Contact + WhatsApp</li>
+              <li>Basic SEO Setup</li>
+              <li>5 Revisions</li>
+              <li>Delivery in 10-14 days</li>
+            </ul>
+            <a href="#contact" class="btn primary">Get Started</a>
+          </div>
+          <div class="price-card">
+            <h3>E-Commerce</h3>
+            <div class="price">₹29,999</div>
+            <p class="price-desc">Full online store solution</p>
+            <ul>
+              <li>Product Listings</li>
+              <li>Cart & Checkout</li>
+              <li>Payment Integration</li>
+              <li>Admin Panel</li>
+              <li>Mobile Responsive</li>
+              <li>Delivery in 18-25 days</li>
+            </ul>
+            <a href="#contact" class="btn outline">Get Started</a>
+          </div>
+        </div>
+        <div class="extra-pricing">
+          <h3>Other Services</h3>
+          <div class="extra-grid">
+            <div class="extra-item"><span>Portfolio Website</span><strong>₹7,999</strong></div>
+            <div class="extra-item"><span>Website Redesign</span><strong>₹9,999</strong></div>
+            <div class="extra-item"><span>Custom Web App</span><strong>Starting ₹35,000</strong></div>
+            <div class="extra-item"><span>Monthly Maintenance</span><strong>₹1,999/mo</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="section-header">
+          <h2>Let’s Build Something Great</h2>
+          <p>Tell us about your project and we’ll get back within 24 hours</p>
+        </div>
+        <div class="contact-wrapper">
+          <form class="contact-form" id="contactForm">
+            <div class="form-row">
+              <input type="text" placeholder="Your Name" required>
+              <input type="email" placeholder="Email Address" required>
+            </div>
+            <div class="form-row">
+              <input type="text" placeholder="Phone Number">
+              <select required>
+                <option value="">Select Service</option>
+                <option>Landing Page</option>
+                <option>Business Website</option>
+                <option>E-Commerce</option>
+                <option>Portfolio Website</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <textarea placeholder="Tell us about your project..." rows="5" required></textarea>
+            <button type="submit" class="btn primary">Send Message</button>
+          </form>
+          <div class="contact-info">
+            <h3>Contact Info</h3>
+            <p><i class="fas fa-envelope"></i> arun.pixeltech@gmail.com</p>
+            <p><i class="fas fa-globe"></i> Available for remote projects worldwide</p>
+            <p><i class="fas fa-clock"></i> Response within 24 hours</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <p>© 2026 Pixeltech. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Admin Login Modal (same file) -->
+  <div id="adminLogin">
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <p>Pixeltech Dashboard</p>
+      <form id="loginForm">
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+      <span class="close-login" onclick="hideAdminLogin()">← Back to Website</span>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('mainNav').classList.toggle('active');
+    });
+
+    // Admin Login show/hide
+    function showAdminLogin() {
+      document.getElementById('adminLogin').classList.add('active');
+    }
+    function hideAdminLogin() {
+      document.getElementById('adminLogin').classList.remove('active');
+    }
+    function showHome() {
+      hideAdminLogin();
+      window.scrollTo(0,0);
+    }
+
+    // Form submit
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you! We will contact you soon.\n\n(Form will be connected to Firebase later)');
+      this.reset();
+    });
+
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Firebase Authentication will be connected later.\n\nThis is just the UI for now.');
+    });
+  </script>
+</body>
+</html>
