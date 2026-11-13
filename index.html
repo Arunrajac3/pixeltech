@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arunraj · Pixeltech</title>
+  <meta name="description" content="Big Ideas deserve better websites. Frontend developer portfolio by Arunraj at Pixeltech." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F7F6F3;
+      --bg-elevated: #FFFFFF;
+      --text: #0A0A0A;
+      --text-secondary: #555555;
+      --text-muted: #999999;
+      --border: #E8E6E1;
+      --border-strong: #D4D1CB;
+      --accent: #0A0A0A;
+      --accent-soft: #F0EFEA;
+      --card-hover: #FAFAF8;
+      --shadow: 0 4px 24px rgba(0,0,0,0.06);
+      --shadow-strong: 0 12px 40px rgba(0,0,0,0.1);
+      --success: #1A7F4B;
+      --danger: #D93838;
+      --radius: 12px;
+      --nav-h: 72px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0C0C0C;
+      --bg-elevated: #161616;
+      --text: #F2F2F2;
+      --text-secondary: #A3A3A3;
+      --text-muted: #666666;
+      --border: #2A2A2A;
+      --border-strong: #3A3A3A;
+      --accent: #F2F2F2;
+      --accent-soft: #1F1F1F;
+      --card-hover: #1A1A1A;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-strong: 0 12px 40px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    .bg-pattern {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 50% -20%, rgba(0,0,0,0.03) 0%, transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(0,0,0,0.02) 0%, transparent 40%);
+    }
+    [data-theme="dark"] .bg-pattern {
+      background:
+        radial-gradient(circle at 50% -20%, rgba(255,255,255,0.03) 0%, transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.02) 0%, transparent 40%);
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      transition: background 0.35s, border-color 0.35s;
+    }
+    .logo-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+    }
+    .logo-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--text);
+      border-radius: 50%;
+    }
+    .logo-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.35rem;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .btn-primary:hover {
+      opacity: 0.88;
+    }
+    .btn-ghost {
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+    }
+    .btn-ghost:hover { color: var(--text); background: transparent; }
+    .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.65rem; }
+    .btn-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+    }
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover { border-color: var(--border-strong); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+    .hidden { display: none !important; }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6.5rem 2.5rem 5rem;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.8rem, 11vw, 7.5rem);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      max-width: 900px;
+      margin-bottom: 1.75rem;
+    }
+    .hero-title span {
+      display: block;
+      color: var(--text-secondary);
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stats-bar {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.35rem 2.5rem;
+      display: flex;
+      gap: 3.5rem;
+      overflow-x: auto;
+      background: var(--bg);
+    }
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .stat-val {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .projects-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 4rem 2.5rem 5rem;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.75rem;
+      letter-spacing: 0.06em;
+    }
+    .section-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.5rem;
+    }
+    @media (max-width: 480px) {
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+
+    .project-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: reveal 0.55s ease forwards;
+    }
+    .project-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    @keyframes reveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .preview-wrap {
+      position: relative;
+      aspect-ratio: 16/10;
+      background: var(--accent-soft);
+      overflow: hidden;
+    }
+    .preview-pane {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      pointer-events: none;
+      transform: scale(1);
+      transform-origin: top left;
+    }
+    .preview-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+    }
+    .placeholder-icon { font-size: 1.6rem; opacity: 0.35; }
+    .placeholder-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .project-card:hover .preview-overlay { opacity: 1; }
+
+    .card-body {
+      padding: 1.5rem 1.5rem 1.35rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.65rem;
+    }
+    .card-cat {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      margin-top: 0.15rem;
+    }
+    .card-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .card-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+      flex: 1;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+    .card-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: opacity 0.2s;
+    }
+    .card-link:hover { opacity: 0.7; }
+
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+    .empty-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .empty-sub { font-size: 0.85rem; color: var(--text-muted); }
+    .loading {
+      text-align: center;
+      padding: 4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2.25rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+    .footer-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+    .footer-co {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: 0.4rem;
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      letter-spacing: 0.04em;
+    }
+
+    .login-wrap {
+      max-width: 400px;
+      margin: 8rem auto 4rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .login-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.75rem 2.25rem;
+      box-shadow: var(--shadow);
+    }
+    .login-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .login-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 2rem;
+    }
+    .field { margin-bottom: 1.15rem; }
+    label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .admin-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.8rem 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .admin-input:focus { border-color: var(--text); }
+    .admin-input::placeholder { color: var(--text-muted); }
+    textarea.admin-input { resize: vertical; min-height: 90px; }
+    .error-msg {
+      font-size: 0.8rem;
+      color: var(--danger);
+      margin-bottom: 1rem;
+    }
+    .login-hint {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .admin-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .admin-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--success);
+      margin-bottom: 0.4rem;
+    }
+    .admin-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem;
+      letter-spacing: 0.04em;
+    }
+    .form-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem;
+      margin-bottom: 3rem;
+    }
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.75rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 700px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .color-row {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .color-swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .color-swatch.selected { border-color: var(--text); }
+    .url-hint {
+      margin-bottom: 1.25rem;
+      padding: 0.7rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+    }
+    .form-msg {
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .form-msg.ok { color: var(--success); }
+    .form-msg.err { color: var(--danger); }
+    .manage-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+    }
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .project-row {
+      background: var(--bg-elevated);
+      padding: 1.15rem 1.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .row-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .row-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .row-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+    .row-live { color: var(--success); margin-left: 0.4rem; }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: var(--shadow-strong);
+    }
+    .modal-danger {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--danger);
+      margin-bottom: 0.85rem;
+    }
+    .modal-msg {
+      color: var(--text-secondary);
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+    .modal-btns {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .iframe-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .iframe-header {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      color: #fff;
+    }
+    .iframe-cat {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+    .iframe-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+    }
+    .iframe-btns { display: flex; gap: 0.65rem; }
+    .iframe-frame {
+      width: 100%;
+      max-width: 1100px;
+      height: 75vh;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; }
+      .hero { padding: 4.5rem 1.25rem 3.5rem; }
+      .stats-bar { padding: 1.15rem 1.25rem; gap: 2rem; }
+      .projects-section { padding: 3rem 1.25rem 4rem; }
+      .admin-wrap { padding: 2.5rem 1.25rem 4rem; }
+      footer { padding: 1.75rem 1.25rem; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+
+  <nav>
+    <button class="logo-btn" onclick="showView('home')">
+      <div class="logo-name"><span class="logo-dot"></span> Arunraj</div>
+      <div class="logo-sub">Pixeltech</div>
+    </button>
+    <div class="nav-right">
+      <button class="btn-ghost hidden" id="nav-work" onclick="showView('home')">Work</button>
+      <button class="btn" id="nav-login" onclick="showView('login')">Login</button>
+      <button class="btn btn-primary hidden" id="nav-admin" onclick="showView('admin')">Admin</button>
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
+        <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="icon-moon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <section class="hero">
+      <p class="hero-eyebrow">Arunraj · Frontend Developer @ Pixeltech</p>
+      <h1 class="hero-title">Big Ideas<br><span>deserve better</span>websites.</h1>
+      <p class="hero-desc">I design and build production-ready websites that look sharp, load fast, and convert. A curated selection of completed work.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('projects-section').scrollIntoView({behavior:'smooth'})">View Work →</button>
+        <button class="btn" onclick="showView('login')">Admin Access</button>
+      </div>
+    </section>
+
+    <div class="stats-bar">
+      <div>
+        <div class="stat-label">Projects</div>
+        <div class="stat-val" id="stat-count">0</div>
+      </div>
+      <div>
+        <div class="stat-label">Stack</div>
+        <div class="stat-val">React · Vue · Node</div>
+      </div>
+      <div>
+        <div class="stat-label">Status</div>
+        <div class="stat-val">Open for projects</div>
+      </div>
+    </div>
+
+    <section class="projects-section" id="projects-section">
+      <div class="section-header">
+        <h2 class="section-title">Selected Work</h2>
+        <span class="section-count" id="section-count">0 PROJECTS</span>
+      </div>
+      <div id="projects-container">
+        <p class="loading">LOADING PROJECTS…</p>
+      </div>
+    </section>
+
+    <footer>
+      <div>
+        <span class="footer-name">Arunraj</span>
+        <span class="footer-co">@ Pixeltech</span>
+        <div class="footer-copy">© <span id="year"></span> — All rights reserved</div>
+      </div>
+      <button class="btn-ghost" style="font-size:0.7rem;" onclick="showView('login')">Admin</button>
+    </footer>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="view hidden" id="view-login">
+    <div class="login-wrap">
+      <div class="login-box">
+        <p class="login-eyebrow">Restricted Access</p>
+        <h2 class="login-title">Admin Login</h2>
+        <div class="field">
+          <label>Password</label>
+          <input class="admin-input" type="password" id="pass-input" placeholder="Enter password…" onkeydown="if(event.key==='Enter')doLogin()" />
+        </div>
+        <p class="error-msg hidden" id="login-error"></p>
+        <button class="btn btn-primary" style="width:100%;margin-top:0.25rem;" onclick="doLogin()">Enter →</button>
+        <p class="login-hint">Admin access only.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="view hidden" id="view-admin">
+    <div class="admin-wrap">
+      <div class="admin-header">
+        <div>
+          <p class="admin-eyebrow">✓ Authenticated</p>
+          <h2 class="admin-title">Admin Panel</h2>
+        </div>
+        <button class="btn" onclick="doLogout()">Logout</button>
+      </div>
+
+      <div class="form-box">
+        <h3 class="form-title">+ Add New Project</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label>Project Title *</label>
+            <input class="admin-input" id="f-title" placeholder="e.g. Client Website" />
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <input class="admin-input" id="f-cat" placeholder="e.g. E-Commerce" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Description *</label>
+          <textarea class="admin-input" id="f-desc" rows="3" placeholder="Brief description of the project…"></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Tags (comma-separated)</label>
+            <input class="admin-input" id="f-tags" placeholder="React, Node.js, Tailwind" />
+          </div>
+          <div class="field">
+            <label>Year</label>
+            <input class="admin-input" id="f-year" placeholder="2026" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Project URL</label>
+            <input class="admin-input" id="f-url" placeholder="https://yourproject.com" oninput="updateUrlHint()" />
+          </div>
+          <div class="field">
+            <label>Accent Color</label>
+            <div class="color-row">
+              <input type="color" id="f-color" value="#C8FF00" style="width:42px;height:42px;border:1px solid var(--border);background:none;cursor:pointer;padding:2px;border-radius:6px;" oninput="syncSwatches()" />
+              <div id="swatches"></div>
+            </div>
+          </div>
+        </div>
+        <div class="url-hint hidden" id="url-hint"></div>
+        <p class="form-msg hidden" id="form-msg"></p>
+        <button class="btn btn-primary" id="add-btn" onclick="addProject()">Add Project →</button>
+      </div>
+
+      <div>
+        <h3 class="manage-title" id="manage-title">Manage Projects (0)</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;" id="no-projects-msg">No projects yet. Add one above.</p>
+        <div class="project-list hidden" id="project-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div class="modal-bg hidden" id="delete-modal" onclick="closeDeleteModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <p class="modal-danger">⚠ Confirm Delete</p>
+      <p class="modal-msg" id="delete-msg"></p>
+      <div class="modal-btns">
+        <button class="btn" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IFRAME MODAL -->
+  <div class="iframe-bg hidden" id="iframe-modal" onclick="closeIframeModal()">
+    <div class="iframe-header" onclick="event.stopPropagation()">
+      <div>
+        <div class="iframe-cat" id="iframe-cat"></div>
+        <div class="iframe-title" id="iframe-title"></div>
+      </div>
+      <div class="iframe-btns">
+        <a id="iframe-open" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="text-decoration:none;">Open Site →</a>
+        <button class="btn btn-sm" style="border-color:#555;color:#fff;" onclick="closeIframeModal()">✕ Close</button>
+      </div>
+    </div>
+    <iframe id="iframe-frame" class="iframe-frame" title="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCthjj1sBspYOGGAX2-P8AiFp9v70RVIAk",
+      authDomain: "arunraj-portfolio.firebaseapp.com",
+      projectId: "arunraj-portfolio",
+      storageBucket: "arunraj-portfolio.firebasestorage.app",
+      messagingSenderId: "578558770076",
+      appId: "1:578558770076:web:1330b7349283c62c6a6659"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const ADMIN_PASSWORD = 'portfolio2026';
+    const SWATCHES = ['#C8FF00','#FF6B35','#7B61FF','#00D4AA','#FF4444','#FFD700'];
+
+    let projects = [];
+    let isAuthed = false;
+    let deleteTargetId = null;
+
+    function getPreferredTheme() {
+      const saved = localStorage.getItem('pixeltech-theme');
+      if (saved) return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('pixeltech-theme', theme);
+      document.getElementById('icon-sun').classList.toggle('hidden', theme === 'dark');
+      document.getElementById('icon-moon').classList.toggle('hidden', theme === 'light');
+    }
+    window.toggleTheme = function() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      applyTheme(current === 'light' ? 'dark' : 'light');
+    };
+    applyTheme(getPreferredTheme());
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    buildSwatches();
+    loadProjects();
+
+    async function loadProjects() {
+      try {
+        const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderProjects();
+        if (isAuthed) renderAdminList();
+      } catch (e) {
+        document.getElementById('projects-container').innerHTML =
+          `<div class="empty-state"><p class="empty-title">Could not load projects</p><p class="empty-sub">${escHtml(e.message)}</p></div>`;
+      }
+    }
+
+    window.showView = function(name) {
+      document.querySelectorAll('.view').forEach(v => {
+        v.classList.remove('active');
+        v.classList.add('hidden');
+      });
+      const el = document.getElementById('view-' + name);
+      el.classList.remove('hidden');
+      el.classList.add('active');
+      document.getElementById('nav-work').classList.toggle('hidden', name === 'home');
+      if (name === 'login') document.getElementById('pass-input').value = '';
+    };
+
+    window.doLogin = function() {
+      const val = document.getElementById('pass-input').value;
+      const err = document.getElementById('login-error');
+      if (val === ADMIN_PASSWORD) {
+        isAuthed = true;
+        err.classList.add('hidden');
+        document.getElementById('nav-login').classList.add('hidden');
+        document.getElementById('nav-admin').classList.remove('hidden');
+        document.getElementById('f-year').value = new Date().getFullYear();
+        renderAdminList();
+        showView('admin');
+      } else {
+        err.textContent = 'Incorrect password.';
+        err.classList.remove('hidden');
+      }
+    };
+
+    window.doLogout = function() {
+      isAuthed = false;
+      document.getElementById('nav-login').classList.remove('hidden');
+      document.getElementById('nav-admin').classList.add('hidden');
+      showView('home');
+    };
+
+    function buildSwatches() {
+      const wrap = document.getElementById('swatches');
+      wrap.style.cssText = 'display:flex;gap:0.45rem;';
+      SWATCHES.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'color-swatch';
+        b.style.background = c;
+        b.setAttribute('data-color', c);
+        b.onclick = () => {
+          document.getElementById('f-color').value = c;
+          syncSwatches();
+        };
+        wrap.appendChild(b);
+      });
+      syncSwatches();
+    }
+
+    function syncSwatches() {
+      const cur = document.getElementById('f-color').value.toLowerCase();
+      document.querySelectorAll('.color-swatch').forEach(b => {
+        b.classList.toggle('selected', b.getAttribute('data-color').toLowerCase() === cur);
+      });
+    }
+    window.syncSwatches = syncSwatches;
+
+    window.updateUrlHint = function() {
+      const url = document.getElementById('f-url').value.trim();
+      const hint = document.getElementById('url-hint');
+      try {
+        new URL(url);
+        hint.innerHTML = '◈ Preview ready: <span style="color:var(--text)">' + escHtml(url) + '</span>';
+        hint.classList.remove('hidden');
+      } catch {
+        hint.classList.add('hidden');
+      }
+    };
+
+    window.addProject = async function() {
+      const title = document.getElementById('f-title').value.trim();
+      const desc = document.getElementById('f-desc').value.trim();
+      const msg = document.getElementById('form-msg');
+      if (!title || !desc) {
+        msg.textContent = 'Title and description are required.';
+        msg.className = 'form-msg err';
+        msg.classList.remove('hidden');
+        return;
+      }
+      const btn = document.getElementById('add-btn');
+      btn.textContent = 'Saving…';
+      btn.disabled = true;
+      try {
+        const tags = document.getElementById('f-tags').value
+          .split(',')
+          .map(t => t.trim())
+          .filter(Boolean);
+        await addDoc(collection(db, 'projects'), {
+          title,
+          category: document.getElementById('f-cat').value.trim(),
+          description: desc,
+          tags,
+          year: document.getElementById('f-year').value.trim() || String(new Date().getFullYear()),
+          url: document.getElementById('f-url').value.trim(),
+          color: document.getElementById('f-color').value,
+          createdAt: Date.now()
+        });
+        await loadProjects();
+        ['f-title','f-cat','f-desc','f-tags','f-url'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('f-color').value = '#C8FF00';
+        syncSwatches();
+        document.getElementById('url-hint').classList.add('hidden');
+        msg.textContent = '✓ Project added successfully!';
+        msg.className = 'form-msg ok';
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 3000);
+      } catch (e) {
+        msg.textContent = 'Error: ' + e.message;
+        msg.className = 'form-msg err';
+        msg.classList.remove('hidden');
+      }
+      btn.textContent = 'Add Project →';
+      btn.disabled = false;
+    };
+
+    function renderProjects() {
+      const cnt = document.getElementById('projects-container');
+      document.getElementById('stat-count').textContent = projects.length;
+      document.getElementById('section-count').textContent = projects.length + ' PROJECTS';
+
+      if (projects.length === 0) {
+        cnt.innerHTML = `
+          <div class="empty-state">
+            <p class="empty-title">NO PROJECTS YET</p>
+            <p class="empty-sub">Login as admin to add your completed work</p>
+          </div>`;
+        return;
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'projects-grid';
+
+      projects.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.style.animationDelay = (i * 0.07) + 's';
+
+        let validUrl = false;
+        try { new URL(p.url); validUrl = true; } catch {}
+
+        const previewHtml = validUrl
+          ? `<div class="preview-wrap">
+               <iframe src="${escHtml(p.url)}" class="preview-pane" title="${escHtml(p.title)}" sandbox="allow-scripts allow-same-origin" scrolling="no" loading="lazy"></iframe>
+               <div class="preview-overlay">
+                 <button class="btn btn-sm" style="border-color:rgba(255,255,255,0.35);color:#fff;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);"
+                   onclick="openIframe('${escJs(p.url)}','${escJs(p.title)}','${escJs(p.category||'')}')">⛶ Expand</button>
+               </div>
+             </div>`
+          : `<div class="preview-wrap">
+               <div class="preview-placeholder">
+                 <span class="placeholder-icon">◈</span>
+                 <span class="placeholder-text">No URL added</span>
+               </div>
+             </div>`;
+
+        const tagsHtml = (p.tags || []).map(t => `<span class="tag">${escHtml(t)}</span>`).join('');
+        const linkHtml = validUrl
+          ? `<a href="${escHtml(p.url)}" target="_blank" rel="noopener noreferrer" class="card-link">Open Live Site →</a>`
+          : '';
+
+        card.innerHTML = `
+          ${previewHtml}
+          <div class="card-body">
+            <div class="card-meta">
+              <div>
+                <div class="card-cat">${escHtml(p.category || '')}</div>
+                <h3 class="card-title">${escHtml(p.title)}</h3>
+              </div>
+              <span class="card-year">${escHtml(String(p.year || ''))}</span>
+            </div>
+            <p class="card-desc">${escHtml(p.description)}</p>
+            <div class="card-tags">${tagsHtml}</div>
+            ${linkHtml}
+          </div>`;
+        grid.appendChild(card);
+      });
+
+      cnt.innerHTML = '';
+      cnt.appendChild(grid);
+    }
+
+    function renderAdminList() {
+      const list = document.getElementById('project-list');
+      const noMsg = document.getElementById('no-projects-msg');
+      document.getElementById('manage-title').textContent = 'Manage Projects (' + projects.length + ')';
+
+      if (projects.length === 0) {
+        list.classList.add('hidden');
+        noMsg.classList.remove('hidden');
+        return;
+      }
+      noMsg.classList.add('hidden');
+      list.classList.remove('hidden');
+      list.innerHTML = '';
+
+      projects.forEach(p => {
+        let validUrl = false;
+        try { new URL(p.url); validUrl = true; } catch {}
+        const row = document.createElement('div');
+        row.className = 'project-row';
+        row.innerHTML = `
+          <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+            <div class="row-dot" style="background:${p.color || '#C8FF00'}"></div>
+            <div style="min-width:0;">
+              <div class="row-name">${escHtml(p.title)}</div>
+              <div class="row-meta">${escHtml(p.category || '')} · ${escHtml(String(p.year || ''))}${validUrl ? '<span class="row-live">· Live ✓</span>' : ''}</div>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${escJs(p.id)}','${escJs(p.title)}')">Delete</button>`;
+        list.appendChild(row);
+      });
+    }
+
+    window.openDeleteModal = function(id, title) {
+      deleteTargetId = id;
+      document.getElementById('delete-msg').textContent = `Remove "${title}"? This cannot be undone.`;
+      document.getElementById('delete-modal').classList.remove('hidden');
+    };
+    window.closeDeleteModal = function() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      deleteTargetId = null;
+    };
+    window.confirmDelete = async function() {
+      try {
+        await deleteDoc(doc(db, 'projects', deleteTargetId));
+        await loadProjects();
+        closeDeleteModal();
+      } catch (e) {
+        alert('Delete failed: ' + e.message);
+      }
+    };
+
+    window.openIframe = function(url, title, cat) {
+      document.getElementById('iframe-cat').textContent = cat || '';
+      document.getElementById('iframe-title').textContent = title;
+      document.getElementById('iframe-open').href = url;
+      document.getElementById('iframe-frame').src = url;
+      document.getElementById('iframe-modal').classList.remove('hidden');
+    };
+    window.closeIframeModal = function() {
+      document.getElementById('iframe-modal').classList.add('hidden');
+      document.getElementById('iframe-frame').src = '';
+    };
+
+    function escHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+    function escJs(s) {
+      return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+  </script>
+</body>
+</html>
