@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pixeltech | Web Development Studio</title>
-<meta name="description" content="Pixeltech builds fast, mobile-ready websites, landing pages and online stores.">
+<meta name="description" content="Big Ideas deserve better websites. Pixeltech builds fast, production-ready websites.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
   // Apply saved theme before first paint (no flash)
   (function(){
@@ -15,24 +18,24 @@
 </script>
 <style>
   :root {
-    --bg: #f5f4f0; --bg-elev: #ffffff; --bg-sunk: #ebe9e3;
-    --text: #111; --muted: #6b6a66; --line: #d9d6cd;
-    --accent: #ff5a1f; --accent-ink: #d64510; --ok: #1a7f4b;
+    --bg: #F5F4F0; --bg-elev: #FFFFFF; --bg-sunk: #EBE9E3;
+    --text: #0A0A0A; --muted: #6B6A66; --line: #D9D6CD;
+    --accent: #2563EB; --accent-ink: #1D4ED8; --ok: #1A7F4B;
     --radius: 14px;
     --shadow: 0 6px 24px rgba(0,0,0,.06);
-    --shadow-strong: 0 16px 40px rgba(0,0,0,.12);
+    --shadow-strong: 0 16px 48px rgba(0,0,0,.1);
   }
   [data-theme="dark"] {
-    --bg: #0c0c0d; --bg-elev: #161618; --bg-sunk: #1d1d20;
-    --text: #f2f1ee; --muted: #9a9892; --line: #2a2a2e;
-    --accent: #ff7a3d; --accent-ink: #ff8f5c; --ok: #3ddc97;
+    --bg: #0B0B0C; --bg-elev: #151516; --bg-sunk: #1C1C1E;
+    --text: #F2F1EE; --muted: #9A9892; --line: #2A2A2E;
+    --accent: #3B82F6; --accent-ink: #60A5FA; --ok: #3DDC97;
     --shadow: 0 6px 24px rgba(0,0,0,.4);
-    --shadow-strong: 0 16px 40px rgba(0,0,0,.6);
+    --shadow-strong: 0 16px 48px rgba(0,0,0,.55);
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
     background: var(--bg); color: var(--text); line-height: 1.5; overflow-x: hidden;
     transition: background .3s, color .3s;
   }
@@ -41,17 +44,19 @@
   button { font: inherit; cursor: pointer; }
   .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
   .grid-frame { max-width: 1200px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
-  .eyebrow { font: 600 .72rem/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .display { font-weight: 800; letter-spacing: -.035em; line-height: 1.02; margin: 0; }
+  .eyebrow { font-family: 'DM Mono', ui-monospace, monospace; font-size: .68rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .display { font-family: 'Bebas Neue', sans-serif; font-weight: 400; letter-spacing: .01em; line-height: .95; margin: 0; }
   .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-    height: 48px; padding: 0 1.4rem; border: 1px solid var(--line); background: var(--bg-elev);
-    color: var(--text); border-radius: 999px; font-weight: 600; font-size: .92rem;
-    transition: transform .2s, box-shadow .2s, background .2s;
+    display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+    height: 46px; padding: 0 1.35rem; border: 1.5px solid var(--text); background: transparent;
+    color: var(--text); border-radius: 8px; font-weight: 600; font-size: .88rem;
+    transition: background .2s, color .2s, opacity .2s;
   }
-  .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .btn:hover { background: var(--text); color: var(--bg); }
   .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn-primary:hover { opacity: .88; }
   .btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-accent:hover { opacity: .9; color: #fff; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
   /* ===== NAV ===== */
@@ -99,7 +104,7 @@
   @keyframes spin { from { transform: rotate(var(--s,0deg)); } to { transform: rotate(calc(var(--s,0deg) + 360deg)); } }
   @keyframes counter { from { transform: rotate(calc(var(--s,0deg) * -1)); } to { transform: rotate(calc(var(--s,0deg) * -1 - 360deg)); } }
   .hero-content { position: relative; z-index: 1; }
-  .hero h1 { font-size: clamp(2.6rem, 7vw, 4.8rem); max-width: 14ch; margin: 1.2rem auto 0; }
+  .hero h1 { font-size: clamp(3.4rem, 10vw, 6.8rem); max-width: 12ch; margin: 1.2rem auto 0; }
   .hero h1 .w { display: inline-block; opacity: 0; transform: translateY(40%); animation: up .7s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(var(--i) * .08s + .1s); }
   .hero h1 .accent { color: var(--accent); }
   @keyframes up { to { opacity: 1; transform: none; } }
@@ -316,24 +321,23 @@
   <section class="hero">
     <div class="rings" aria-hidden="true">
       <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
-      <div class="arm" style="--s:0deg;--d:42s"><div class="orb" style="background:#ff5a1f">P</div></div>
-      <div class="arm" style="--s:120deg;--d:42s"><div class="orb" style="background:#7b61ff">&lt;/&gt;</div></div>
-      <div class="arm" style="--s:240deg;--d:42s"><div class="orb" style="background:#00b38a">SEO</div></div>
+      <div class="arm" style="--s:0deg;--d:42s"><div class="orb" style="background:#2563EB">P</div></div>
+      <div class="arm" style="--s:120deg;--d:42s"><div class="orb" style="background:#7B61FF">&lt;/&gt;</div></div>
+      <div class="arm" style="--s:240deg;--d:42s"><div class="orb" style="background:#00B38A">SEO</div></div>
       <div class="arm inner" style="--s:60deg;--d:28s"><div class="orb" style="background:#2563eb">UI</div></div>
       <div class="arm inner" style="--s:240deg;--d:28s"><div class="orb" style="background:#111;color:#ffd24a">$</div></div>
     </div>
 
     <div class="wrap hero-content">
-      <p class="eyebrow">Web development studio</p>
+      <p class="eyebrow">Pixeltech · Web Development Studio</p>
       <h1 class="display" id="heroTitle">
-        <span class="w" style="--i:0">Websites</span>
-        <span class="w" style="--i:1">that</span>
-        <span class="w accent" style="--i:2">load</span>
-        <span class="w" style="--i:3">fast</span>
-        <span class="w" style="--i:4">and</span>
-        <span class="w" style="--i:5">sell.</span>
+        <span class="w" style="--i:0">Big</span>
+        <span class="w" style="--i:1">Ideas</span>
+        <span class="w" style="--i:2">deserve</span>
+        <span class="w accent" style="--i:3">better</span>
+        <span class="w" style="--i:4">websites.</span>
       </h1>
-      <p class="lead reveal" style="--d:.6">Pixeltech designs and builds business websites, landing pages and online stores that look sharp on every screen and turn visitors into customers.</p>
+      <p class="lead reveal" style="--d:.6">We design and build production-ready websites that look sharp, load fast, and convert. A curated selection of completed work for clients who want results.</p>
       <div class="hero-actions reveal" style="--d:.8">
         <a class="btn btn-accent" href="#contact">Start your project</a>
         <a class="btn" href="#work">See our work</a>
@@ -351,7 +355,7 @@
     <div class="grid-frame">
       <div class="section-head reveal">
         <p class="eyebrow">01 / Services</p>
-        <h2 class="display">What we build.</h2>
+        <h2 class="display">What we build.<br><span style="color:var(--accent)">Done right.</span></h2>
         <p>From a single landing page to a full store, every project is built by hand, tested on real devices and designed to be found on Google.</p>
       </div>
       <div class="services">
@@ -398,7 +402,7 @@
     <div class="grid-frame">
       <div class="section-head reveal">
         <p class="eyebrow">03 / Approach</p>
-        <h2 class="display">How we work.</h2>
+        <h2 class="display">How we work.<br><span style="color:var(--accent)">No surprises.</span></h2>
         <p>Simple process, clear communication and no surprises on price or timeline.</p>
       </div>
       <div class="principles">
@@ -436,7 +440,7 @@
           <label>Tags (comma separated)<input id="pTags" placeholder="React, Firebase"></label>
           <label>Year<input id="pYear" placeholder="2026"></label>
           <label>Project URL<input id="pUrl" placeholder="https://example.com"></label>
-          <label>Accent color<input id="pColor" type="color" value="#ff5a1f"></label>
+          <label>Accent color<input id="pColor" type="color" value="#2563EB"></label>
         </div>
         <p class="formmsg" id="formMsg" role="status"></p>
         <div class="factions">
@@ -646,7 +650,7 @@
       card.innerHTML = `
         <div class="card-visual">${shotImg}<div class="mock">
           <div class="bar"><i></i><i></i><i></i></div>
-          <div class="body"><b class="s"></b><b></b><b class="c" style="background:${esc(p.color || "#ff5a1f")}"></b><b></b></div>
+          <div class="body"><b class="s"></b><b></b><b class="c" style="background:${esc(p.color || "#2563EB")}"></b><b></b></div>
         </div></div>
         <div class="card-body">
           <p class="eyebrow">${esc(p.category || "")}</p>
@@ -702,7 +706,7 @@
     $("pTags").value = (p.tags || []).join(", ");
     $("pYear").value = p.year || "";
     $("pUrl").value = p.url || "";
-    $("pColor").value = p.color || "#ff5a1f";
+    $("pColor").value = p.color || "#2563EB";
     $("formTitle").textContent = "Edit project";
     $("saveBtn").textContent = "Save changes";
     $("cancelEdit").classList.remove("hidden");
@@ -713,7 +717,7 @@
   function resetProjectForm() {
     editId = null;
     $("projectForm").reset();
-    $("pColor").value = "#ff5a1f";
+    $("pColor").value = "#2563EB";
     $("formTitle").textContent = "Add new project";
     $("saveBtn").textContent = "Add project";
     $("cancelEdit").classList.add("hidden");
