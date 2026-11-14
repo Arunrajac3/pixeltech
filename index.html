@@ -262,6 +262,14 @@
   .muted { color: var(--muted); }
   @media (max-width: 900px) { .admin-wrap { grid-template-columns: 1fr; } }
   @media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } .admin-wrap { padding: 0 1.25rem; } }
+  .card-visual .site-shot {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: top; background: var(--bg-elev);
+    transition: transform .6s cubic-bezier(.2,.8,.2,1);
+  }
+  .card:hover .card-visual .site-shot { transform: scale(1.03); }
+  .logo-img { width: 28px; height: 28px; object-fit: contain; border-radius: 8px; display: block; }
+  .foot-grid .logo .logo-img { width: 36px; height: 36px; }
 </style>
 </head>
 <body>
@@ -269,7 +277,7 @@
 <header class="nav">
   <div class="wrap nav-inner">
     <a class="logo" href="#top" aria-label="Pixeltech home">
-      <span class="logo-mark">P</span>Pixeltech
+      <img class="logo-img" src="images/logo.png" alt="Pixeltech logo" width="28" height="28">Pixeltech
     </a>
     <nav class="nav-links" aria-label="Main">
       <a href="#services">Services</a>
@@ -445,7 +453,7 @@
   <div class="grid-frame">
     <div class="foot-grid">
       <div>
-        <a class="logo" href="#top"><span class="logo-mark">P</span>Pixeltech</a>
+        <a class="logo" href="#top"><img class="logo-img" src="images/logo.png" alt="Pixeltech logo" width="28" height="28">Pixeltech</a>
         <p style="color:var(--muted);max-width:30ch;margin:1rem 0 0">Web development, landing pages, online stores and SEO for businesses that want to grow online.</p>
       </div>
       <div><h4>Services</h4><ul><li><a href="#services">Business websites</a></li><li><a href="#services">Landing pages</a></li><li><a href="#services">Online stores</a></li><li><a href="#services">SEO &amp; Ads</a></li></ul></div>
@@ -626,11 +634,17 @@
     grid.innerHTML = "";
     projects.forEach(p => {
       const hasUrl = /^https?:\/\//i.test(p.url || "");
+      // Live screenshot of the project site; the mock underneath shows if the image fails
+      const shotImg = hasUrl
+        ? `<img class="site-shot" src="https://image.thum.io/get/width/800/crop/500/${encodeURI(p.url)}"
+             alt="${esc(p.title)} preview" loading="lazy" decoding="async"
+             onerror="this.style.display='none'">`
+        : "";
       const card = document.createElement(hasUrl ? "a" : "div");
       card.className = "card";
       if (hasUrl) { card.href = p.url; card.target = "_blank"; card.rel = "noopener noreferrer"; }
       card.innerHTML = `
-        <div class="card-visual"><div class="mock">
+        <div class="card-visual">${shotImg}<div class="mock">
           <div class="bar"><i></i><i></i><i></i></div>
           <div class="body"><b class="s"></b><b></b><b class="c" style="background:${esc(p.color || "#ff5a1f")}"></b><b></b></div>
         </div></div>
