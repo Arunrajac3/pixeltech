@@ -1,3 +1,65 @@
+Claude
+Diagnosing a failed admin sign-in.
+Diagnosing a failed admin sign-in.
+Error auth/invalid-credential nu irukku. Adhu-kku mukkiyamaana karanam: code-la ADMIN_EMAIL ippodhum your-admin@email.com (placeholder). Firebase andha fake email-la login panna try pannudhu, adhaan fail aagudhu.
+
+Fix panna:
+
+Email-a maathunga. index.html-la:
+js
+const ADMIN_EMAIL = "your-admin@email.com";
+Unga Firebase user email-a podunga. Spelling-um case-um exact-aa irukkanum.
+
+Firebase-la user irukka-nu check pannunga. Authentication → Users → andha email list-la irukkanum. Illaa irundha Add user panni create pannunga (email + password).
+Password sariyaa-nu check pannunga. Login-la type panra password-um, Firebase user-ku set panna password-um same-aa irukkanum. Doubt-a irundha Users list-la antha user → Reset password panni pudhu password set pannunga.
+Email/Password enable-aa irukka-nu check pannunga. Authentication → Sign-in method → Email/Password → Enabled.
+Antha steps mudichaa, file-a GitHub-la push pannunga. Email-a inga sollunga, naan code-la fill panren.
+
+1794632754749_image.png
+Ran a command, shared files
+Login password sari-aa irukku, aana Firestore-la admin check fail aaguthu. Adhaan “not allowed” varuthu. File updated: index.html
+
+Ippo login panna, error-la exact reason-um UID-um kaattum. Antha UID-a Firestore-la irukka doc id-oda compare pannunga.
+
+Check pannanum:
+
+Doc id exact-aa UID-a? Firestore → admins collection-la document id, Authentication → Users-la User UID ku same-aa irukkanum. Space, extra character illa-nu paarunga.
+Doc path: admins/<uid>. Collection-la nested-aa create aagi irundha (admins/<something>/...) work aagaadhu.
+Rules publish aagiruka? Rules edit panna piragu Publish click pannanum. Publish panna illaa, pazhaya rules thaan irukkum.
+Rules-la admins read allow irukka? Ithu illaiyinna permission-denied varum:
+match /admins/{uid} {
+  allow read: if request.auth != null && request.auth.uid == uid;
+  allow write: if false;
+}
+F12 console paarunga. Admin check failed: nu log irundha, adhula irukka code (permission-denied / not-found) thaan exact problem.
+Error message-la irukka reason-um UID-um sollunga, adhu vechu next step solren.
+
+Index
+Code
+·HTML
+admin email - arunrajac3sac@gmail.com
+
+Ran a command, shared files
+ADMIN_EMAIL ippo arunrajac3sac@gmail.com nu set pannitten. File updated: index.html
+
+Next steps:
+
+Firebase Authentication → Users-la andha email irukka-nu paarunga. Illaa irundha Add user panni password kudunga.
+Users table-la antha user-oda User UID copy pannunga.
+Firestore → admins collection → Document ID = andha UID, field role = admin.
+Rules publish aagiruka-nu paarunga.
+Antha steps mudichaa, file-a GitHub-la push pannunga. Login panni check pannunga, error vandhaa exact message-la irukka reason-um UID-um sollunga.
+
+Index
+Code
+·HTML
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -53,7 +115,7 @@
   .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
   .btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
+ 
   /* ===== NAV ===== */
   .nav {
     position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 92%, transparent);
@@ -78,7 +140,7 @@
   }
   .mobile-menu a { padding: .7rem 0; border-bottom: 1px solid var(--line); }
   .mobile-menu.open { display: flex; }
-
+ 
   /* ===== HERO ===== */
   .hero { position: relative; overflow: hidden; padding: 5.5rem 0 4.5rem; text-align: center; }
   .rings {
@@ -111,13 +173,13 @@
     animation: pulse 1.6s infinite;
   }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(26,127,75,.5); } 100% { box-shadow: 0 0 0 8px rgba(26,127,75,0); } }
-
+ 
   /* ===== SECTIONS ===== */
   section.block { padding: 5rem 0; border-top: 1px solid var(--line); }
   .section-head { padding: 0 1.5rem; margin-bottom: 2.5rem; }
   .section-head h2 { font-size: clamp(2rem, 4.5vw, 3.2rem); margin: .8rem 0 0; }
   .section-head p { color: var(--muted); max-width: 56ch; margin-top: 1rem; }
-
+ 
   /* Services */
   .services { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
   .service {
@@ -132,7 +194,7 @@
   }
   .service h3 { font-size: 1.1rem; margin: 1.3rem 0 .5rem; }
   .service p { margin: 0; color: var(--muted); font-size: .92rem; }
-
+ 
   /* Work */
   .work { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .card { background: var(--bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
@@ -157,20 +219,20 @@
   .card-body h3 { margin: 0; font-size: 1.3rem; }
   .card-body p { margin: 0; color: var(--muted); font-size: .95rem; }
   .card-body .more { margin-top: auto; padding-top: 1rem; font-size: .88rem; font-weight: 600; color: var(--accent-ink); }
-
+ 
   /* Process / principles */
   .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
   .principle { background: var(--bg); padding: 2rem 1.6rem; }
   .principle .num { font: 600 .72rem ui-monospace, monospace; color: var(--muted); letter-spacing: .1em; }
   .principle h3 { font-size: 1.25rem; margin: 1rem 0 .4rem; }
   .principle p { margin: 0; color: var(--muted); font-size: .94rem; }
-
+ 
   /* Contact CTA */
   .cta { text-align: center; padding: 5.5rem 1.5rem; background: var(--bg-sunk); }
   .cta h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin: .8rem auto 0; max-width: 18ch; }
   .cta p { color: var(--muted); max-width: 50ch; margin: 1.2rem auto 0; }
   .cta .btn { margin-top: 2rem; }
-
+ 
   /* Footer */
   footer { border-top: 1px solid var(--line); }
   .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 1px; background: var(--line); }
@@ -180,11 +242,11 @@
   .foot-grid a { color: var(--muted); font-size: .95rem; }
   .foot-grid a:hover { color: var(--text); }
   .foot-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; padding: 1.2rem 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
-
+ 
   /* Reveal on scroll */
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; transition-delay: calc(var(--d, 0) * 1s); }
   .reveal.is-visible { opacity: 1; transform: none; }
-
+ 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
     .nav-links { display: none; }
@@ -205,7 +267,7 @@
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .reveal, .hero h1 .w { opacity: 1; transform: none; }
   }
-
+ 
   /* ===== ADMIN LOGIN ===== */
   .hidden { display: none !important; }
   .admin-bar {
@@ -233,7 +295,7 @@
   .modal .err { color: #d93a3a; font-size: .85rem; min-height: 1.2em; margin: -.4rem 0 .8rem; }
   .modal .close { background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; }
   @media (max-width: 720px) { .admin-bar { top: 60px; font-size: .8rem; } }
-
+ 
   /* ===== ADMIN PANEL ===== */
   .admin-bar a { color: #fff; font-weight: 700; text-decoration: underline; }
   .admin-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem; padding: 0 1.5rem; align-items: start; }
@@ -265,7 +327,7 @@
 </style>
 </head>
 <body>
-
+ 
 <header class="nav">
   <div class="wrap nav-inner">
     <a class="logo" href="#top" aria-label="Pixeltech home">
@@ -296,14 +358,14 @@
     <a href="#contact">Contact</a>
   </nav>
 </header>
-
+ 
 <div class="admin-bar hidden" id="adminBar" role="status">
   <span>Signed in as <strong>Admin</strong></span>
   <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Logout</button></span>
 </div>
-
+ 
 <main id="top">
-
+ 
   <!-- HERO -->
   <section class="hero">
     <div class="rings" aria-hidden="true">
@@ -314,7 +376,7 @@
       <div class="arm inner" style="--s:60deg;--d:28s"><div class="orb" style="background:#2563eb">UI</div></div>
       <div class="arm inner" style="--s:240deg;--d:28s"><div class="orb" style="background:#111;color:#ffd24a">$</div></div>
     </div>
-
+ 
     <div class="wrap hero-content">
       <p class="eyebrow">Web development studio</p>
       <h1 class="display" id="heroTitle">
@@ -337,7 +399,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- SERVICES -->
   <section class="block" id="services">
     <div class="grid-frame">
@@ -354,7 +416,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- WORK -->
   <section class="block" id="work">
     <div class="grid-frame">
@@ -384,7 +446,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- APPROACH -->
   <section class="block" id="approach">
     <div class="grid-frame">
@@ -400,7 +462,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- CTA / CONTACT -->
   <section class="cta" id="contact">
     <p class="eyebrow reveal">Let's talk</p>
@@ -408,9 +470,9 @@
     <p class="reveal">Tell us what you need. We reply within one working day with a clear plan and quote.</p>
     <a class="btn btn-primary reveal" href="mailto:hello@pixeltech.example?subject=New%20project%20enquiry">Email us</a>
   </section>
-
+ 
 </main>
-
+ 
 <section class="block hidden" id="admin">
   <div class="grid-frame">
     <div class="section-head">
@@ -440,7 +502,7 @@
     </div>
   </div>
 </section>
-
+ 
 <footer>
   <div class="grid-frame">
     <div class="foot-grid">
@@ -455,12 +517,12 @@
     <div class="foot-bottom"><span>© <span id="year"></span> Pixeltech</span><span>Built with care in Tamil Nadu</span></div>
   </div>
 </footer>
-
+ 
 <script>
 (function () {
   // Hero letter reveal: already handled by CSS. Year in footer:
   document.getElementById('year').textContent = new Date().getFullYear();
-
+ 
   // Theme toggle
   var root = document.documentElement;
   document.getElementById('themeToggle').addEventListener('click', function () {
@@ -468,7 +530,7 @@
     root.setAttribute('data-theme', next);
     localStorage.setItem('pixeltech-theme', next);
   });
-
+ 
   // Mobile menu
   var menuBtn = document.getElementById('menuBtn');
   var mobile = document.getElementById('mobileMenu');
@@ -479,7 +541,7 @@
   mobile.querySelectorAll('a').forEach(function (a) {
     a.addEventListener('click', function () { mobile.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); });
   });
-
+ 
   // Scroll reveal (one observer, unobserves after firing)
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
@@ -489,7 +551,7 @@
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 })();
 </script>
-
+ 
 <!-- Admin login modal (password only; email fixed in script) -->
 <div class="modal-bg hidden" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
   <form class="modal" id="loginForm" novalidate>
@@ -504,7 +566,7 @@
     </div>
   </form>
 </div>
-
+ 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
@@ -513,7 +575,7 @@
   import {
     getFirestore, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+ 
   const firebaseConfig = {
     apiKey: "AIzaSyCthjj1sBspYOGGAX2-P8AiFp9v70RVIAk",
     authDomain: "arunraj-portfolio.firebaseapp.com",
@@ -524,43 +586,44 @@
   };
   // The one Firebase Auth admin account. Users only type the password.
   const ADMIN_EMAIL = "arunrajac3sac@gmail.com";
-
+ 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
+ 
   const $ = id => document.getElementById(id);
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
+ 
   let projects = [];
   let editId = null;
   let isAdmin = false;
-
+ 
   // Admin = a document exists in Firestore: admins/{uid}
   async function checkAdmin(uid) {
     try {
       const snap = await getDoc(doc(db, "admins", uid));
-      return snap.exists();
+      if (!snap.exists()) return { ok: false, reason: "no admins/" + uid + " document" };
+      return { ok: true };
     } catch (ex) {
       console.error("Admin check failed:", ex.code, ex.message);
-      return false;
+      return { ok: false, reason: ex.code || ex.message };
     }
   }
-
+ 
   // ---------- Login modal ----------
   const modal = $("loginModal");
   const loginForm = $("loginForm");
   const loginErr = $("loginErr");
   const loginSubmit = $("loginSubmit");
-
+ 
   function openLogin() { loginErr.textContent = ""; modal.classList.remove("hidden"); $("loginPass").focus(); }
   function closeLogin() { modal.classList.add("hidden"); loginForm.reset(); loginErr.textContent = ""; }
   $("loginBtn").addEventListener("click", openLogin);
   $("loginCancel").addEventListener("click", closeLogin);
   modal.addEventListener("click", e => { if (e.target === modal) closeLogin(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.classList.contains("hidden")) closeLogin(); });
-
+ 
   loginForm.addEventListener("submit", async e => {
     e.preventDefault();
     const pass = $("loginPass").value;
@@ -570,9 +633,10 @@
     loginErr.textContent = "";
     try {
       const cred = await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pass); // email is fixed; user types only the password
-      if (!(await checkAdmin(cred.user.uid))) {
+      const check = await checkAdmin(cred.user.uid);
+      if (!check.ok) {
         await signOut(auth);
-        loginErr.textContent = "This account is not allowed to manage projects.";
+        loginErr.textContent = "Not allowed (" + check.reason + "). UID: " + cred.user.uid;
         return;
       }
       closeLogin();                 // onAuthStateChanged handles the rest
@@ -584,19 +648,19 @@
       loginSubmit.textContent = "Sign in";
     }
   });
-
+ 
   $("logoutBtn").addEventListener("click", () => signOut(auth));
   $("adminBarLogout").addEventListener("click", () => signOut(auth));
-
+ 
   // Single source of truth for login state (also restores login after refresh)
   onAuthStateChanged(auth, async user => {
-    isAdmin = !!user && await checkAdmin(user.uid);
+    isAdmin = !!user && (await checkAdmin(user.uid)).ok;
     if (user && !isAdmin) { await signOut(auth); return; } // signed in but not in admins
     if (!isAdmin) resetProjectForm();
     applyAdminUI();
     if (isAdmin) window.scrollTo({ top: 0 });
   });
-
+ 
   function applyAdminUI() {
     $("loginBtn").classList.toggle("hidden", isAdmin);
     $("logoutBtn").classList.toggle("hidden", !isAdmin);
@@ -604,7 +668,7 @@
     $("admin").classList.toggle("hidden", !isAdmin);
     if (isAdmin) renderAdminList();
   }
-
+ 
   // ---------- Firestore: load + render projects (public read) ----------
   async function loadProjects() {
     try {
@@ -617,7 +681,7 @@
     renderWork();
     if (isAdmin) renderAdminList();
   }
-
+ 
   function renderWork() {
     if (!projects.length) return;
     const grid = $("workGrid");
@@ -641,7 +705,7 @@
       grid.appendChild(card);
     });
   }
-
+ 
   // ---------- Admin: add / edit / delete ----------
   function renderAdminList() {
     const list = $("adminList");
@@ -659,7 +723,7 @@
       list.appendChild(row);
     });
   }
-
+ 
   $("adminList").addEventListener("click", async e => {
     const editBtn = e.target.closest("[data-edit]");
     const delBtn = e.target.closest("[data-del]");
@@ -675,7 +739,7 @@
       } catch (ex) { setMsg("Delete failed: " + ex.message, false); }
     }
   });
-
+ 
   function startEdit(id) {
     const p = projects.find(x => x.id === id);
     if (!p) return;
@@ -693,7 +757,7 @@
     setMsg("", true);
     $("projectForm").scrollIntoView({ behavior: "smooth", block: "start" });
   }
-
+ 
   function resetProjectForm() {
     editId = null;
     $("projectForm").reset();
@@ -703,13 +767,13 @@
     $("cancelEdit").classList.add("hidden");
   }
   $("cancelEdit").addEventListener("click", () => { resetProjectForm(); setMsg("", true); });
-
+ 
   function setMsg(text, ok) {
     const m = $("formMsg");
     m.textContent = text;
     m.className = "formmsg " + (ok ? "ok" : "err");
   }
-
+ 
   $("projectForm").addEventListener("submit", async e => {
     e.preventDefault();
     if (!isAdmin) return setMsg("Please log in as admin first.", false);
@@ -725,7 +789,7 @@
     };
     if (!data.title || !data.description) return setMsg("Title and description are required.", false);
     if (data.url && !/^https?:\/\//i.test(data.url)) return setMsg("URL must start with https://", false);
-
+ 
     $("saveBtn").disabled = true;
     try {
       if (editId) {
@@ -743,10 +807,11 @@
       $("saveBtn").disabled = false;
     }
   });
-
+ 
   // ---------- Boot ----------
   applyAdminUI();
   loadProjects();
 </script>
 </body>
 </html>
+
