@@ -511,7 +511,7 @@
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy
+    getFirestore, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -537,6 +537,17 @@
   let editId = null;
   let isAdmin = false;
 
+  // Admin = a document exists in Firestore: admins/{uid}
+  async function checkAdmin(uid) {
+    try {
+      const snap = await getDoc(doc(db, "admins", uid));
+      return snap.exists();
+    } catch (ex) {
+      console.error("Admin check failed:", ex.code, ex.message);
+      return false;
+    }
+  }
+
   // ---------- Login modal ----------
   const modal = $("loginModal");
   const loginForm = $("loginForm");
@@ -558,10 +569,16 @@
     loginSubmit.textContent = "Signing in…";
     loginErr.textContent = "";
     try {
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pass); // email is fixed; user types only the password
+      const cred = await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pass); // email is fixed; user types only the password
+      if (!(await checkAdmin(cred.user.uid))) {
+        await signOut(auth);
+        loginErr.textContent = "This account is not allowed to manage projects.";
+        return;
+      }
       closeLogin();                 // onAuthStateChanged handles the rest
     } catch (ex) {
-      loginErr.textContent = "Login failed. Check your email and password.";
+      console.error("Login error:", ex.code, ex.message);
+      loginErr.textContent = "Login failed (" + (ex.code || "unknown") + "). Check the admin email and password.";
     } finally {
       loginSubmit.disabled = false;
       loginSubmit.textContent = "Sign in";
@@ -572,9 +589,9 @@
   $("adminBarLogout").addEventListener("click", () => signOut(auth));
 
   // Single source of truth for login state (also restores login after refresh)
-  onAuthStateChanged(auth, user => {
-    isAdmin = !!user && user.email === ADMIN_EMAIL;
-    if (user && !isAdmin) { signOut(auth); return; } // signed in with a non-admin account
+  onAuthStateChanged(auth, async user => {
+    isAdmin = !!user && await checkAdmin(user.uid);
+    if (user && !isAdmin) { await signOut(auth); return; } // signed in but not in admins
     if (!isAdmin) resetProjectForm();
     applyAdminUI();
     if (isAdmin) window.scrollTo({ top: 0 });
