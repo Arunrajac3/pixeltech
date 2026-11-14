@@ -205,6 +205,34 @@
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .reveal, .hero h1 .w { opacity: 1; transform: none; }
   }
+
+  /* ===== ADMIN LOGIN ===== */
+  .hidden { display: none !important; }
+  .admin-bar {
+    position: sticky; top: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: .55rem 1.25rem; background: var(--accent); color: #fff; font-size: .88rem;
+  }
+  .admin-bar strong { font-weight: 700; }
+  .admin-bar button { background: #fff; color: #111; border: 0; border-radius: 999px; padding: .4rem .9rem; font-weight: 600; font-size: .82rem; cursor: pointer; }
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+    display: grid; place-items: center; padding: 1.25rem;
+  }
+  .modal {
+    width: 100%; max-width: 380px; background: var(--bg-elev); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow-strong); padding: 1.75rem;
+  }
+  .modal h2 { margin: .4rem 0 1.2rem; font-size: 1.5rem; letter-spacing: -.02em; }
+  .modal label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: .35rem; }
+  .modal input {
+    width: 100%; height: 44px; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg); color: var(--text); font: inherit; margin-bottom: 1rem;
+  }
+  .modal input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .modal .row { display: flex; gap: .6rem; justify-content: flex-end; margin-top: .5rem; }
+  .modal .err { color: #d93a3a; font-size: .85rem; min-height: 1.2em; margin: -.4rem 0 .8rem; }
+  .modal .close { background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; }
+  @media (max-width: 720px) { .admin-bar { top: 60px; font-size: .8rem; } }
 </style>
 </head>
 <body>
@@ -221,6 +249,8 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-actions">
+      <button class="btn" id="loginBtn" style="height:38px;padding:0 1rem;font-size:.85rem">Admin login</button>
+      <button class="btn hidden" id="logoutBtn" style="height:38px;padding:0 1rem;font-size:.85rem">Logout</button>
       <button class="icon-btn" id="themeToggle" aria-label="Toggle dark theme">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       </button>
@@ -237,6 +267,11 @@
     <a href="#contact">Contact</a>
   </nav>
 </header>
+
+<div class="admin-bar hidden" id="adminBar" role="status">
+  <span>Signed in as <strong>Admin</strong></span>
+  <button id="adminBarLogout" type="button">Logout</button>
+</div>
 
 <main id="top">
 
@@ -394,6 +429,99 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 })();
+</script>
+
+<!-- Admin login modal -->
+<div class="modal-bg hidden" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <form class="modal" id="loginForm" novalidate>
+    <p class="eyebrow">Restricted access</p>
+    <h2 id="loginTitle">Admin login</h2>
+    <label for="loginEmail">Email</label>
+    <input id="loginEmail" type="email" autocomplete="username" required placeholder="you@example.com">
+    <label for="loginPass">Password</label>
+    <input id="loginPass" type="password" autocomplete="current-password" required placeholder="••••••••">
+    <p class="err" id="loginErr" role="alert"></p>
+    <div class="row">
+      <button class="close" type="button" id="loginCancel">Cancel</button>
+      <button class="btn btn-primary" type="submit" id="loginSubmit">Sign in</button>
+    </div>
+  </form>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // Same Firebase project as your portfolio. Set ADMIN_EMAIL to the user created in
+  // Firebase Console > Authentication > Users.
+  const firebaseConfig = {
+    apiKey: "AIzaSyCthjj1sBspYOGGAX2-P8AiFp9v70RVIAk",
+    authDomain: "arunraj-portfolio.firebaseapp.com",
+    projectId: "arunraj-portfolio",
+    storageBucket: "arunraj-portfolio.firebasestorage.app",
+    messagingSenderId: "578558770076",
+    appId: "1:578558770076:web:1330b7349283c62c6a6659"
+  };
+  const ADMIN_EMAIL = "your-admin@email.com";
+
+  const auth = getAuth(initializeApp(firebaseConfig));
+
+  const $ = id => document.getElementById(id);
+  const modal = $("loginModal");
+  const form = $("loginForm");
+  const err = $("loginErr");
+  const submit = $("loginSubmit");
+
+  function openLogin() {
+    err.textContent = "";
+    modal.classList.remove("hidden");
+    $("loginEmail").focus();
+  }
+  function closeLogin() {
+    modal.classList.add("hidden");
+    form.reset();
+    err.textContent = "";
+  }
+
+  $("loginBtn").addEventListener("click", openLogin);
+  $("loginCancel").addEventListener("click", closeLogin);
+  modal.addEventListener("click", e => { if (e.target === modal) closeLogin(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.classList.contains("hidden")) closeLogin(); });
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const email = $("loginEmail").value.trim();
+    const pass = $("loginPass").value;
+    if (!email || !pass) { err.textContent = "Enter email and password."; return; }
+    submit.disabled = true;
+    submit.textContent = "Signing in…";
+    err.textContent = "";
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      closeLogin();
+    } catch (ex) {
+      err.textContent = "Login failed. Check your email and password.";
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Sign in";
+    }
+  });
+
+  async function logout() { await signOut(auth); }
+  $("logoutBtn").addEventListener("click", logout);
+  $("adminBarLogout").addEventListener("click", logout);
+
+  // Keeps the admin state across page refreshes
+  onAuthStateChanged(auth, user => {
+    const isAdmin = !!user && user.email === ADMIN_EMAIL;
+    // Signed in with a non-admin account: sign them out
+    if (user && !isAdmin) { signOut(auth); return; }
+    $("loginBtn").classList.toggle("hidden", isAdmin);
+    $("logoutBtn").classList.toggle("hidden", !isAdmin);
+    $("adminBar").classList.toggle("hidden", !isAdmin);
+    document.body.classList.toggle("is-admin", isAdmin);
+  });
 </script>
 </body>
 </html>
