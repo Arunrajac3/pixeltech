@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixeltech | Web Development Studio</title>
+<meta name="description" content="Pixeltech builds fast, mobile-ready websites, landing pages and online stores.">
+<script>
+  // Apply saved theme before first paint (no flash)
+  (function(){
+    var t = localStorage.getItem('pixeltech-theme');
+    if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #f5f4f0; --bg-elev: #ffffff; --bg-sunk: #ebe9e3;
+    --text: #111; --muted: #6b6a66; --line: #d9d6cd;
+    --accent: #ff5a1f; --accent-ink: #d64510; --ok: #1a7f4b;
+    --radius: 14px;
+    --shadow: 0 6px 24px rgba(0,0,0,.06);
+    --shadow-strong: 0 16px 40px rgba(0,0,0,.12);
+  }
+  [data-theme="dark"] {
+    --bg: #0c0c0d; --bg-elev: #161618; --bg-sunk: #1d1d20;
+    --text: #f2f1ee; --muted: #9a9892; --line: #2a2a2e;
+    --accent: #ff7a3d; --accent-ink: #ff8f5c; --ok: #3ddc97;
+    --shadow: 0 6px 24px rgba(0,0,0,.4);
+    --shadow-strong: 0 16px 40px rgba(0,0,0,.6);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; overflow-x: hidden;
+    transition: background .3s, color .3s;
+  }
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
+  button { font: inherit; cursor: pointer; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+  .grid-frame { max-width: 1200px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .eyebrow { font: 600 .72rem/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .display { font-weight: 800; letter-spacing: -.035em; line-height: 1.02; margin: 0; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    height: 48px; padding: 0 1.4rem; border: 1px solid var(--line); background: var(--bg-elev);
+    color: var(--text); border-radius: 999px; font-weight: 600; font-size: .92rem;
+    transition: transform .2s, box-shadow .2s, background .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { display: flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.05rem; letter-spacing: -.02em; }
+  .logo-mark {
+    width: 28px; height: 28px; border-radius: 8px; background: var(--accent);
+    display: grid; place-items: center; color: #fff; font-size: .9rem; font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 1.6rem; font-size: .92rem; color: var(--muted); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-actions { display: flex; align-items: center; gap: .6rem; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--bg-elev); display: grid; place-items: center; color: var(--text);
+  }
+  .menu-btn { display: none; }
+  .mobile-menu {
+    display: none; flex-direction: column; gap: .2rem; padding: .75rem 1.25rem 1rem; border-top: 1px solid var(--line);
+  }
+  .mobile-menu a { padding: .7rem 0; border-bottom: 1px solid var(--line); }
+  .mobile-menu.open { display: flex; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; overflow: hidden; padding: 5.5rem 0 4.5rem; text-align: center; }
+  .rings {
+    position: absolute; top: 50%; left: 50%; width: min(620px, 140vw); aspect-ratio: 1;
+    transform: translate(-50%, -50%); pointer-events: none; z-index: 0;
+  }
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed var(--line); }
+  .ring.r2 { inset: 15%; }
+  .ring.r3 { inset: 31%; opacity: .6; }
+  .arm { position: absolute; inset: 0; border-radius: 50%; animation: spin var(--d, 40s) linear infinite; }
+  .arm.inner { inset: 15%; animation-direction: reverse; }
+  .orb {
+    position: absolute; top: -22px; left: 50%; margin-left: -22px; width: 44px; height: 44px; border-radius: 13px;
+    display: grid; place-items: center; color: #fff; font-weight: 800; font-size: .9rem;
+    box-shadow: var(--shadow); animation: counter var(--d, 40s) linear infinite;
+  }
+  .arm.inner .orb { animation-direction: reverse; }
+  @keyframes spin { from { transform: rotate(var(--s,0deg)); } to { transform: rotate(calc(var(--s,0deg) + 360deg)); } }
+  @keyframes counter { from { transform: rotate(calc(var(--s,0deg) * -1)); } to { transform: rotate(calc(var(--s,0deg) * -1 - 360deg)); } }
+  .hero-content { position: relative; z-index: 1; }
+  .hero h1 { font-size: clamp(2.6rem, 7vw, 4.8rem); max-width: 14ch; margin: 1.2rem auto 0; }
+  .hero h1 .w { display: inline-block; opacity: 0; transform: translateY(40%); animation: up .7s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(var(--i) * .08s + .1s); }
+  .hero h1 .accent { color: var(--accent); }
+  @keyframes up { to { opacity: 1; transform: none; } }
+  .hero p.lead { max-width: 52ch; margin: 1.4rem auto 0; color: var(--muted); font-size: 1.12rem; }
+  .hero-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+  .hero-meta { margin-top: 2rem; display: flex; gap: 1.4rem; justify-content: center; flex-wrap: wrap; color: var(--muted); font-size: .85rem; }
+  .hero-meta span::before {
+    content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); margin-right: .45rem; vertical-align: middle;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(26,127,75,.5); } 100% { box-shadow: 0 0 0 8px rgba(26,127,75,0); } }
+
+  /* ===== SECTIONS ===== */
+  section.block { padding: 5rem 0; border-top: 1px solid var(--line); }
+  .section-head { padding: 0 1.5rem; margin-bottom: 2.5rem; }
+  .section-head h2 { font-size: clamp(2rem, 4.5vw, 3.2rem); margin: .8rem 0 0; }
+  .section-head p { color: var(--muted); max-width: 56ch; margin-top: 1rem; }
+
+  /* Services */
+  .services { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+  .service {
+    padding: 2rem 1.5rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    transition: background .25s;
+  }
+  .service:last-child { border-right: 0; }
+  .service:hover { background: var(--bg-elev); }
+  .service .ico {
+    width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--bg-sunk); color: var(--accent-ink); font-weight: 800;
+  }
+  .service h3 { font-size: 1.1rem; margin: 1.3rem 0 .5rem; }
+  .service p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+  /* Work */
+  .work { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .card { background: var(--bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left; transition: transform .35s;
+  }
+  .card:hover::before { transform: scaleX(1); }
+  .card-visual {
+    aspect-ratio: 16/10; position: relative; overflow: hidden; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-visual .mock { width: 72%; height: 70%; border-radius: 10px; background: var(--bg-elev); box-shadow: var(--shadow-strong); overflow: hidden; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .card-visual .mock .bar { height: 18px; background: var(--bg-sunk); border-bottom: 1px solid var(--line); display: flex; gap: 4px; align-items: center; padding: 0 8px; }
+  .card-visual .mock .bar i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+  .card-visual .mock .body { padding: 14px; display: grid; gap: 8px; }
+  .card-visual .mock .body b { height: 10px; border-radius: 4px; background: var(--bg-sunk); }
+  .card-visual .mock .body b.s { width: 60%; }
+  .card-visual .mock .body b.c { height: 40px; background: var(--accent); opacity: .85; }
+  .card:hover .mock { transform: scale(1.03); }
+  .card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+  .card-body h3 { margin: 0; font-size: 1.3rem; }
+  .card-body p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .card-body .more { margin-top: auto; padding-top: 1rem; font-size: .88rem; font-weight: 600; color: var(--accent-ink); }
+
+  /* Process / principles */
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+  .principle { background: var(--bg); padding: 2rem 1.6rem; }
+  .principle .num { font: 600 .72rem ui-monospace, monospace; color: var(--muted); letter-spacing: .1em; }
+  .principle h3 { font-size: 1.25rem; margin: 1rem 0 .4rem; }
+  .principle p { margin: 0; color: var(--muted); font-size: .94rem; }
+
+  /* Contact CTA */
+  .cta { text-align: center; padding: 5.5rem 1.5rem; background: var(--bg-sunk); }
+  .cta h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin: .8rem auto 0; max-width: 18ch; }
+  .cta p { color: var(--muted); max-width: 50ch; margin: 1.2rem auto 0; }
+  .cta .btn { margin-top: 2rem; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--line); }
+  .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 1px; background: var(--line); }
+  .foot-grid > div { background: var(--bg); padding: 2rem 1.5rem; }
+  .foot-grid h4 { margin: 0 0 1rem; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .foot-grid ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; }
+  .foot-grid a { color: var(--muted); font-size: .95rem; }
+  .foot-grid a:hover { color: var(--text); }
+  .foot-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; padding: 1.2rem 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+
+  /* Reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; transition-delay: calc(var(--d, 0) * 1s); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .nav-links { display: none; }
+    .menu-btn { display: grid; }
+    .services { grid-template-columns: repeat(2, 1fr); }
+    .service:nth-child(2) { border-right: 0; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .work, .principles { grid-template-columns: 1fr; }
+    .services { grid-template-columns: 1fr; }
+    .service { border-right: 0; }
+    .rings { width: 130vw; }
+    .orb { width: 36px; height: 36px; top: -18px; margin-left: -18px; font-size: .75rem; }
+    .section-head { padding: 0 1.25rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal, .hero h1 .w { opacity: 1; transform: none; }
+  }
+
+  /* ===== ADMIN LOGIN ===== */
+  .hidden { display: none !important; }
+  .admin-bar {
+    position: sticky; top: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: .55rem 1.25rem; background: var(--accent); color: #fff; font-size: .88rem;
+  }
+  .admin-bar strong { font-weight: 700; }
+  .admin-bar button { background: #fff; color: #111; border: 0; border-radius: 999px; padding: .4rem .9rem; font-weight: 600; font-size: .82rem; cursor: pointer; }
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+    display: grid; place-items: center; padding: 1.25rem;
+  }
+  .modal {
+    width: 100%; max-width: 380px; background: var(--bg-elev); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow-strong); padding: 1.75rem;
+  }
+  .modal h2 { margin: .4rem 0 1.2rem; font-size: 1.5rem; letter-spacing: -.02em; }
+  .modal label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: .35rem; }
+  .modal input {
+    width: 100%; height: 44px; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg); color: var(--text); font: inherit; margin-bottom: 1rem;
+  }
+  .modal input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .modal .row { display: flex; gap: .6rem; justify-content: flex-end; margin-top: .5rem; }
+  .modal .err { color: #d93a3a; font-size: .85rem; min-height: 1.2em; margin: -.4rem 0 .8rem; }
+  .modal .close { background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; }
+  @media (max-width: 720px) { .admin-bar { top: 60px; font-size: .8rem; } }
+
+  /* ===== ADMIN PANEL ===== */
+  .admin-bar a { color: #fff; font-weight: 700; text-decoration: underline; }
+  .admin-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem; padding: 0 1.5rem; align-items: start; }
+  .admin-form { background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .fgrid .full { grid-column: 1 / -1; }
+  .admin-form label { display: grid; gap: .35rem; font-size: .8rem; font-weight: 600; color: var(--muted); }
+  .admin-form input, .admin-form textarea {
+    width: 100%; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg); color: var(--text); font: inherit; font-weight: 400;
+  }
+  .admin-form input[type=color] { height: 44px; padding: 3px; }
+  .admin-form input:focus, .admin-form textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .factions { display: flex; gap: .6rem; margin-top: 1.2rem; flex-wrap: wrap; }
+  .formmsg { min-height: 1.2em; font-size: .88rem; margin: .8rem 0 0; }
+  .formmsg.ok { color: var(--ok); }
+  .formmsg.err { color: #d93a3a; }
+  .alist .arow {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elev); margin-bottom: .6rem;
+  }
+  .alist .arow small { color: var(--muted); }
+  .alist .aact { display: flex; gap: .5rem; flex-shrink: 0; }
+  .btn-sm { height: 34px; padding: 0 .9rem; font-size: .8rem; }
+  .btn.danger { color: #d93a3a; border-color: #d93a3a; }
+  .muted { color: var(--muted); }
+  @media (max-width: 900px) { .admin-wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } .admin-wrap { padding: 0 1.25rem; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top" aria-label="Pixeltech home">
+      <span class="logo-mark">P</span>Pixeltech
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#approach">Approach</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn" id="loginBtn" style="height:38px;padding:0 1rem;font-size:.85rem">Admin login</button>
+      <button class="btn hidden" id="logoutBtn" style="height:38px;padding:0 1rem;font-size:.85rem">Logout</button>
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle dark theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="btn btn-primary" href="#contact" style="height:38px;padding:0 1.1rem;font-size:.85rem">Start a project</a>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+    <a href="#services">Services</a>
+    <a href="#work">Work</a>
+    <a href="#approach">Approach</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<div class="admin-bar hidden" id="adminBar" role="status">
+  <span>Signed in as <strong>Admin</strong></span>
+  <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Logout</button></span>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="rings" aria-hidden="true">
+      <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <div class="arm" style="--s:0deg;--d:42s"><div class="orb" style="background:#ff5a1f">P</div></div>
+      <div class="arm" style="--s:120deg;--d:42s"><div class="orb" style="background:#7b61ff">&lt;/&gt;</div></div>
+      <div class="arm" style="--s:240deg;--d:42s"><div class="orb" style="background:#00b38a">SEO</div></div>
+      <div class="arm inner" style="--s:60deg;--d:28s"><div class="orb" style="background:#2563eb">UI</div></div>
+      <div class="arm inner" style="--s:240deg;--d:28s"><div class="orb" style="background:#111;color:#ffd24a">$</div></div>
+    </div>
+
+    <div class="wrap hero-content">
+      <p class="eyebrow">Web development studio</p>
+      <h1 class="display" id="heroTitle">
+        <span class="w" style="--i:0">Websites</span>
+        <span class="w" style="--i:1">that</span>
+        <span class="w accent" style="--i:2">load</span>
+        <span class="w" style="--i:3">fast</span>
+        <span class="w" style="--i:4">and</span>
+        <span class="w" style="--i:5">sell.</span>
+      </h1>
+      <p class="lead reveal" style="--d:.6">Pixeltech designs and builds business websites, landing pages and online stores that look sharp on every screen and turn visitors into customers.</p>
+      <div class="hero-actions reveal" style="--d:.8">
+        <a class="btn btn-accent" href="#contact">Start your project</a>
+        <a class="btn" href="#work">See our work</a>
+      </div>
+      <div class="hero-meta reveal" style="--d:1">
+        <span>Mobile-first</span>
+        <span>SEO-ready</span>
+        <span>Taking new clients</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="block" id="services">
+    <div class="grid-frame">
+      <div class="section-head reveal">
+        <p class="eyebrow">01 / Services</p>
+        <h2 class="display">What we build.</h2>
+        <p>From a single landing page to a full store, every project is built by hand, tested on real devices and designed to be found on Google.</p>
+      </div>
+      <div class="services">
+        <article class="service reveal"><div class="ico">W</div><h3>Business websites</h3><p>Clear, fast sites for services, clinics, shops and local businesses, with contact forms and WhatsApp integration.</p></article>
+        <article class="service reveal" style="--d:.1"><div class="ico">L</div><h3>Landing pages</h3><p>Focused pages built to get one action: enquiries, bookings, sign-ups or sales for your ads.</p></article>
+        <article class="service reveal" style="--d:.2"><div class="ico">S</div><h3>Online stores</h3><p>Product catalogues, cart and checkout flows that stay fast on mobile and easy for your team to update.</p></article>
+        <article class="service reveal" style="--d:.3"><div class="ico">G</div><h3>SEO &amp; Google Ads</h3><p>Technical SEO, clean structure and campaign setup so the right people find you and the clicks are worth paying for.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="block" id="work">
+    <div class="grid-frame">
+      <div class="section-head reveal">
+        <p class="eyebrow">02 / Selected work</p>
+        <h2 class="display">Projects we have shipped.</h2>
+        <p>A mix of client websites, e-commerce stores and our own products. Replace the descriptions with your real project details.</p>
+      </div>
+      <div class="work" id="workGrid">
+        <!-- Each card: replace the title, tag and text with the real project. Add a link where the project is live. -->
+        <a class="card reveal" href="#contact">
+          <div class="card-visual"><div class="mock"><div class="bar"><i></i><i></i><i></i></div><div class="body"><b class="s"></b><b></b><b class="c"></b><b></b></div></div></div>
+          <div class="card-body"><p class="eyebrow">E-commerce</p><h3>Chandrila</h3><p>Natural skincare and food store with a clean catalogue and fast checkout.</p><span class="more">View project →</span></div>
+        </a>
+        <a class="card reveal" href="#contact" style="--d:.1">
+          <div class="card-visual"><div class="mock"><div class="bar"><i></i><i></i><i></i></div><div class="body"><b class="s"></b><b></b><b class="c"></b><b></b></div></div></div>
+          <div class="card-body"><p class="eyebrow">E-commerce</p><h3>FurryNest Co.</h3><p>Pet furniture store built as a portfolio piece with product galleries and filters.</p><span class="more">View project →</span></div>
+        </a>
+        <a class="card reveal" href="#contact">
+          <div class="card-visual"><div class="mock"><div class="bar"><i></i><i></i><i></i></div><div class="body"><b class="s"></b><b></b><b class="c"></b><b></b></div></div></div>
+          <div class="card-body"><p class="eyebrow">Brand website</p><h3>Leonine</h3><p>Apparel and handcrafted art brand site with a bold, image-led layout.</p><span class="more">View project →</span></div>
+        </a>
+        <a class="card reveal" href="#contact" style="--d:.1">
+          <div class="card-visual"><div class="mock"><div class="bar"><i></i><i></i><i></i></div><div class="body"><b class="s"></b><b></b><b class="c"></b><b></b></div></div></div>
+          <div class="card-body"><p class="eyebrow">Web app</p><h3>TNPSC Quiz Platform</h3><p>Interactive exam-prep quizzes for Tamil grammar and literature, built for mobile study.</p><span class="more">View project →</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROACH -->
+  <section class="block" id="approach">
+    <div class="grid-frame">
+      <div class="section-head reveal">
+        <p class="eyebrow">03 / Approach</p>
+        <h2 class="display">How we work.</h2>
+        <p>Simple process, clear communication and no surprises on price or timeline.</p>
+      </div>
+      <div class="principles">
+        <div class="principle reveal"><span class="num">01</span><h3>Understand first</h3><p>We learn your business, customers and goals before writing a single line of code.</p></div>
+        <div class="principle reveal" style="--d:.1"><span class="num">02</span><h3>Built for speed</h3><p>Lean code, optimised images and lazy-loaded media keep pages fast on slow mobile networks.</p></div>
+        <div class="principle reveal" style="--d:.2"><span class="num">03</span><h3>Easy to manage</h3><p>You get a site you can update yourself, plus clear documentation and a handover call.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / CONTACT -->
+  <section class="cta" id="contact">
+    <p class="eyebrow reveal">Let's talk</p>
+    <h2 class="display reveal">Have a project in mind?</h2>
+    <p class="reveal">Tell us what you need. We reply within one working day with a clear plan and quote.</p>
+    <a class="btn btn-primary reveal" href="mailto:hello@pixeltech.example?subject=New%20project%20enquiry">Email us</a>
+  </section>
+
+</main>
+
+<section class="block hidden" id="admin">
+  <div class="grid-frame">
+    <div class="section-head">
+      <p class="eyebrow">Admin</p>
+      <h2 class="display">Manage projects.</h2>
+      <p>Changes save to Firestore and appear on the site straight away.</p>
+    </div>
+    <div class="admin-wrap">
+      <form id="projectForm" class="admin-form" novalidate>
+        <h3 id="formTitle" style="margin:0 0 1rem">Add new project</h3>
+        <div class="fgrid">
+          <label>Title *<input id="pTitle" required></label>
+          <label>Category<input id="pCat" placeholder="E-commerce"></label>
+          <label class="full">Description *<textarea id="pDesc" rows="3"></textarea></label>
+          <label>Tags (comma separated)<input id="pTags" placeholder="React, Firebase"></label>
+          <label>Year<input id="pYear" placeholder="2026"></label>
+          <label>Project URL<input id="pUrl" placeholder="https://example.com"></label>
+          <label>Accent color<input id="pColor" type="color" value="#ff5a1f"></label>
+        </div>
+        <p class="formmsg" id="formMsg" role="status"></p>
+        <div class="factions">
+          <button class="btn btn-accent" type="submit" id="saveBtn">Add project</button>
+          <button class="btn" type="button" id="cancelEdit">Cancel</button>
+        </div>
+      </form>
+      <div id="adminList" class="alist"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="grid-frame">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#top"><span class="logo-mark">P</span>Pixeltech</a>
+        <p style="color:var(--muted);max-width:30ch;margin:1rem 0 0">Web development, landing pages, online stores and SEO for businesses that want to grow online.</p>
+      </div>
+      <div><h4>Services</h4><ul><li><a href="#services">Business websites</a></li><li><a href="#services">Landing pages</a></li><li><a href="#services">Online stores</a></li><li><a href="#services">SEO &amp; Ads</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#work">Work</a></li><li><a href="#approach">Approach</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div><h4>Social</h4><ul><li><a href="#" rel="noopener">Instagram</a></li><li><a href="#" rel="noopener">LinkedIn</a></li><li><a href="#" rel="noopener">GitHub</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© <span id="year"></span> Pixeltech</span><span>Built with care in Tamil Nadu</span></div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Hero letter reveal: already handled by CSS. Year in footer:
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Theme toggle
+  var root = document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('pixeltech-theme', next);
+  });
+
+  // Mobile menu
+  var menuBtn = document.getElementById('menuBtn');
+  var mobile = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', function () {
+    var open = mobile.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  mobile.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { mobile.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); });
+  });
+
+  // Scroll reveal (one observer, unobserves after firing)
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+})();
+</script>
+
+<!-- Admin login modal (password only, checked against Firestore hash) -->
+<div class="modal-bg hidden" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <form class="modal" id="loginForm" novalidate>
+    <p class="eyebrow">Restricted access</p>
+    <h2 id="loginTitle">Admin login</h2>
+    <label for="loginPass">Password</label>
+    <input id="loginPass" type="password" autocomplete="current-password" required placeholder="••••••••">
+    <p class="err" id="loginErr" role="alert"></p>
+    <div class="row">
+      <button class="close" type="button" id="loginCancel">Cancel</button>
+      <button class="btn btn-primary" type="submit" id="loginSubmit">Sign in</button>
+    </div>
+  </form>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCthjj1sBspYOGGAX2-P8AiFp9v70RVIAk",
+    authDomain: "arunraj-portfolio.firebaseapp.com",
+    projectId: "arunraj-portfolio",
+    storageBucket: "arunraj-portfolio.firebasestorage.app",
+    messagingSenderId: "578558770076",
+    appId: "1:578558770076:web:1330b7349283c62c6a6659"
+  };
+  const db = getFirestore(initializeApp(firebaseConfig));
+
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  let projects = [];
+  let editId = null;
+  let isAdmin = sessionStorage.getItem("pt-admin") === "1";
+
+  // ---------- Password check: compare SHA-256 of input with settings/admin.passwordHash ----------
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // ---------- Login modal ----------
+  const modal = $("loginModal");
+  const loginForm = $("loginForm");
+  const loginErr = $("loginErr");
+  const loginSubmit = $("loginSubmit");
+
+  function openLogin() { loginErr.textContent = ""; modal.classList.remove("hidden"); $("loginPass").focus(); }
+  function closeLogin() { modal.classList.add("hidden"); loginForm.reset(); loginErr.textContent = ""; }
+  $("loginBtn").addEventListener("click", openLogin);
+  $("loginCancel").addEventListener("click", closeLogin);
+  modal.addEventListener("click", e => { if (e.target === modal) closeLogin(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.classList.contains("hidden")) closeLogin(); });
+
+  loginForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const pass = $("loginPass").value;
+    if (!pass) { loginErr.textContent = "Enter the password."; return; }
+    loginSubmit.disabled = true;
+    loginSubmit.textContent = "Checking…";
+    loginErr.textContent = "";
+    try {
+      if (!crypto.subtle) throw new Error("open this page over https, not file://");
+      const snap = await getDoc(doc(db, "settings", "admin"));
+      const hash = snap.exists() ? snap.data().passwordHash : "";
+      if (!hash) throw new Error("settings/admin document is missing");
+      if ((await sha256(pass)) !== hash) { loginErr.textContent = "Incorrect password."; return; }
+      isAdmin = true;
+      sessionStorage.setItem("pt-admin", "1");
+      closeLogin();
+      applyAdminUI();
+      loadProjects();
+    } catch (ex) {
+      loginErr.textContent = "Could not sign in: " + ex.message;
+    } finally {
+      loginSubmit.disabled = false;
+      loginSubmit.textContent = "Sign in";
+    }
+  });
+
+  function logout() {
+    isAdmin = false;
+    sessionStorage.removeItem("pt-admin");
+    resetProjectForm();
+    applyAdminUI();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  $("logoutBtn").addEventListener("click", logout);
+  $("adminBarLogout").addEventListener("click", logout);
+
+  function applyAdminUI() {
+    $("loginBtn").classList.toggle("hidden", isAdmin);
+    $("logoutBtn").classList.toggle("hidden", !isAdmin);
+    $("adminBar").classList.toggle("hidden", !isAdmin);
+    $("admin").classList.toggle("hidden", !isAdmin);
+    if (isAdmin) renderAdminList();
+  }
+
+  // ---------- Firestore: load + render projects ----------
+  async function loadProjects() {
+    try {
+      const snap = await getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")));
+      projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (ex) {
+      console.warn("Projects could not be loaded:", ex.message);
+      return; // keep the static cards already on the page
+    }
+    renderWork();
+    if (isAdmin) renderAdminList();
+  }
+
+  function renderWork() {
+    if (!projects.length) return; // nothing in Firestore yet: keep the static cards
+    const grid = $("workGrid");
+    grid.innerHTML = "";
+    projects.forEach(p => {
+      const hasUrl = /^https?:\/\//i.test(p.url || "");
+      const card = document.createElement(hasUrl ? "a" : "div");
+      card.className = "card";
+      if (hasUrl) { card.href = p.url; card.target = "_blank"; card.rel = "noopener noreferrer"; }
+      card.innerHTML = `
+        <div class="card-visual"><div class="mock">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="body"><b class="s"></b><b></b><b class="c" style="background:${esc(p.color || "#ff5a1f")}"></b><b></b></div>
+        </div></div>
+        <div class="card-body">
+          <p class="eyebrow">${esc(p.category || "")}</p>
+          <h3>${esc(p.title)}</h3>
+          <p>${esc(p.description)}</p>
+          ${hasUrl ? '<span class="more">View project →</span>' : ""}
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  // ---------- Admin: add / edit / delete ----------
+  function renderAdminList() {
+    const list = $("adminList");
+    list.innerHTML = "";
+    if (!projects.length) { list.innerHTML = '<p class="muted">No projects yet. Add one on the left.</p>'; return; }
+    projects.forEach(p => {
+      const row = document.createElement("div");
+      row.className = "arow";
+      row.innerHTML = `
+        <div><strong>${esc(p.title)}</strong><br><small>${esc(p.category || "")} · ${esc(p.year || "")}</small></div>
+        <div class="aact">
+          <button class="btn btn-sm" type="button" data-edit="${p.id}">Edit</button>
+          <button class="btn btn-sm danger" type="button" data-del="${p.id}">Delete</button>
+        </div>`;
+      list.appendChild(row);
+    });
+  }
+
+  $("adminList").addEventListener("click", async e => {
+    const editBtn = e.target.closest("[data-edit]");
+    const delBtn = e.target.closest("[data-del]");
+    if (editBtn) return startEdit(editBtn.dataset.edit);
+    if (delBtn) {
+      const p = projects.find(x => x.id === delBtn.dataset.del);
+      if (!p || !confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
+      try {
+        await deleteDoc(doc(db, "projects", p.id));
+        if (editId === p.id) resetProjectForm();
+        setMsg("Project deleted.", true);
+        await loadProjects();
+      } catch (ex) { setMsg("Delete failed: " + ex.message, false); }
+    }
+  });
+
+  function startEdit(id) {
+    const p = projects.find(x => x.id === id);
+    if (!p) return;
+    editId = id;
+    $("pTitle").value = p.title || "";
+    $("pCat").value = p.category || "";
+    $("pDesc").value = p.description || "";
+    $("pTags").value = (p.tags || []).join(", ");
+    $("pYear").value = p.year || "";
+    $("pUrl").value = p.url || "";
+    $("pColor").value = p.color || "#ff5a1f";
+    $("formTitle").textContent = "Edit project";
+    $("saveBtn").textContent = "Save changes";
+    $("cancelEdit").classList.remove("hidden");
+    setMsg("", true);
+    $("projectForm").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function resetProjectForm() {
+    editId = null;
+    $("projectForm").reset();
+    $("pColor").value = "#ff5a1f";
+    $("formTitle").textContent = "Add new project";
+    $("saveBtn").textContent = "Add project";
+    $("cancelEdit").classList.add("hidden");
+  }
+  $("cancelEdit").addEventListener("click", () => { resetProjectForm(); setMsg("", true); });
+
+  function setMsg(text, ok) {
+    const m = $("formMsg");
+    m.textContent = text;
+    m.className = "formmsg " + (ok ? "ok" : "err");
+  }
+
+  $("projectForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!isAdmin) return;
+    const val = id => $(id).value.trim();
+    const data = {
+      title: val("pTitle"),
+      category: val("pCat"),
+      description: val("pDesc"),
+      tags: val("pTags").split(",").map(t => t.trim()).filter(Boolean),
+      year: val("pYear") || String(new Date().getFullYear()),
+      url: val("pUrl"),
+      color: $("pColor").value
+    };
+    if (!data.title || !data.description) return setMsg("Title and description are required.", false);
+    if (data.url && !/^https?:\/\//i.test(data.url)) return setMsg("URL must start with https://", false);
+
+    $("saveBtn").disabled = true;
+    try {
+      if (editId) {
+        await updateDoc(doc(db, "projects", editId), { ...data, updatedAt: Date.now() });
+        setMsg("Project updated ✓", true);
+      } else {
+        await addDoc(collection(db, "projects"), { ...data, createdAt: Date.now() });
+        setMsg("Project added ✓", true);
+      }
+      resetProjectForm();
+      await loadProjects();
+    } catch (ex) {
+      setMsg("Save failed: " + ex.message, false);
+    } finally {
+      $("saveBtn").disabled = false;
+    }
+  });
+
+  // ---------- Boot ----------
+  applyAdminUI();
+  loadProjects();
+</script>
+</body>
+</html>
