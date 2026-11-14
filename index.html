@@ -119,6 +119,8 @@
       height: 36px;
       display: block;
       flex-shrink: 0;
+      object-fit: contain;
+      border-radius: 8px;
     }
     .logo-text {
       display: flex;
@@ -222,6 +224,37 @@
       margin: 0 auto;
       padding: 7rem 2rem 5.5rem;
       text-align: center;
+    }
+
+    /* Floating icons (ArtCraft style) */
+    .hero-float {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+      z-index: 0;
+    }
+    .hero-float:nth-child(1) { top: 8%; left: 6%; background: #FF6B35; animation-delay: 0s; }
+    .hero-float:nth-child(2) { top: 18%; right: 8%; background: #7B61FF; animation-delay: 0.8s; }
+    .hero-float:nth-child(3) { top: 55%; left: 4%; background: #00D4AA; animation-delay: 1.4s; }
+    .hero-float:nth-child(4) { top: 62%; right: 5%; background: #FF4444; animation-delay: 0.4s; }
+    .hero-float:nth-child(5) { bottom: 12%; left: 18%; background: #FFD700; animation-delay: 1.1s; }
+    .hero-float:nth-child(6) { bottom: 18%; right: 16%; background: #2563EB; animation-delay: 1.8s; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(3deg); }
+    }
+    @media (max-width: 700px) {
+      .hero-float { width: 40px; height: 40px; font-size: 1.1rem; border-radius: 11px; }
+      .hero-float:nth-child(3),
+      .hero-float:nth-child(5) { display: none; }
     }
     .hero-eyebrow {
       font-family: 'DM Mono', monospace;
@@ -837,27 +870,239 @@
       .admin-wrap { padding: 2.5rem 1.15rem 4rem; }
       footer { padding: 2rem 1.15rem; }
     }
+      /* ===== HERO MOTION + PROJECT VISUALS ===== */
+    .hero { overflow: hidden; }
+
+    .hero-glow {
+      position: absolute; width: 520px; height: 520px; border-radius: 50%;
+      filter: blur(90px); opacity: 0.35; pointer-events: none; z-index: -1;
+      animation: glowDrift 14s ease-in-out infinite alternate;
+    }
+    .hero-glow.g1 { background: #C8FF00; top: -140px; left: -140px; }
+    .hero-glow.g2 { background: #7B61FF; bottom: -180px; right: -140px; animation-delay: -6s; }
+    @keyframes glowDrift { to { transform: translate(60px, 40px) scale(1.15); } }
+
+    .hero-title .w {
+      display: inline-block; opacity: 0;
+      transform: translateY(60%) rotate(4deg);
+      animation: wordUp 0.8s cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: calc(var(--i) * 0.09s + 0.15s);
+    }
+    @keyframes wordUp { to { opacity: 1; transform: none; } }
+
+    .fade-up {
+      opacity: 0; transform: translateY(16px);
+      animation: fadeUp 0.7s ease forwards;
+      animation-delay: var(--d, 0s);
+    }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+    .hero-meta span:last-child::before {
+      content: ''; display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--success); margin-right: 0.5rem;
+      animation: pulseDot 1.6s infinite;
+    }
+    @keyframes pulseDot {
+      0%   { box-shadow: 0 0 0 0 rgba(26,127,75,0.6); }
+      100% { box-shadow: 0 0 0 8px rgba(26,127,75,0); }
+    }
+
+    .ticker {
+      margin-top: 3.5rem; overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    }
+    .ticker-track {
+      display: flex; width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .ticker:hover .ticker-track { animation-play-state: paused; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+    .ticker-item {
+      flex: 0 0 220px; margin-right: 1rem; text-align: left;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .ticker-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-strong); }
+    .ticker-item .thumb {
+      height: 128px; position: relative; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .ticker-item .thumb span {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; color: #fff;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .ticker-item .name {
+      padding: 0.7rem 0.85rem 0.15rem; font-size: 0.85rem; font-weight: 600;
+      color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ticker-item .cat {
+      padding: 0 0.85rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+    }
+
+    .preview-pane { transition: transform 0.8s cubic-bezier(.2,.8,.2,1); }
+    .project-card:hover .preview-pane { transform: scale(1.04); }
+    .preview-wrap::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+      transform: translateX(-100%); transition: transform 0.9s ease;
+    }
+    .project-card:hover .preview-wrap::after { transform: translateX(100%); }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    @media (max-width: 768px) {
+      .hero-glow { width: 300px; height: 300px; }
+      .ticker-item { flex-basis: 180px; }
+      .ticker-item .thumb { height: 104px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .ticker-track { animation: none; }
+    }
+      /* ===== SITE-WIDE FLOATING SHAPES ===== */
+    .site-floats {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .sf {
+      position: absolute; width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: #fff; opacity: 0.45;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      animation: siteFloat 9s ease-in-out infinite;
+      will-change: transform;
+    }
+    .sf:nth-child(odd)  { animation-duration: 11s; }
+    .sf:nth-child(3n)   { animation-duration: 7s; }
+    @keyframes siteFloat {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      50%      { transform: translate3d(0, -22px, 0) rotate(8deg); }
+    }
+    .sf-1 { top: 12%; left: 3%;   background: #FF6B35; }
+    .sf-2 { top: 30%; right: 4%;  background: #7B61FF; width: 36px; height: 36px; }
+    .sf-3 { top: 52%; left: 2%;   background: #00D4AA; }
+    .sf-4 { top: 68%; right: 6%;  background: #FFD700; color: #0A0A0A; }
+    .sf-5 { top: 84%; left: 8%;   background: #2563EB; width: 34px; height: 34px; }
+    .sf-6 { top: 92%; right: 12%; background: #FF4444; }
+    .sf-7 { top: 42%; left: 46%;  background: #C8FF00; color: #0A0A0A; width: 30px; height: 30px; opacity: 0.35; }
+    [data-theme="dark"] .sf { opacity: 0.3; }
+    @media (max-width: 768px) {
+      .sf-3, .sf-5, .sf-7 { display: none; }
+      .sf { width: 36px; height: 36px; font-size: 0.95rem; }
+    }
+      /* ===== A: ORBITING HERO ICONS ===== */
+    .orbit {
+      position: absolute; top: 50%; left: 50%;
+      width: min(640px, 150vw); aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      pointer-events: none; z-index: 0;
+    }
+    .orbit .ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1px dashed var(--border-strong); opacity: 0.7;
+    }
+    .orbit .ring.r2 { inset: 14%; }
+    .orbit .ring.r3 { inset: 30%; opacity: 0.4; }
+    .arm {
+      position: absolute; inset: 0; border-radius: 50%;
+      animation: orbitSpin var(--d, 40s) linear infinite;
+    }
+    .arm.inner { inset: 14%; }
+    .arm.inner { animation-direction: reverse; }
+    .item {
+      position: absolute; top: -26px; left: 50%; margin-left: -26px;
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.3rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      animation: counterSpin var(--d, 40s) linear infinite;
+    }
+    .arm.inner .item { animation-direction: reverse; }
+    @keyframes orbitSpin {
+      from { transform: rotate(var(--s, 0deg)); }
+      to   { transform: rotate(calc(var(--s, 0deg) + 360deg)); }
+    }
+    @keyframes counterSpin {
+      from { transform: rotate(calc(var(--s, 0deg) * -1)); }
+      to   { transform: rotate(calc(var(--s, 0deg) * -1 - 360deg)); }
+    }
+    @media (max-width: 768px) {
+      .orbit { width: 130vw; }
+      .item { width: 40px; height: 40px; top: -20px; margin-left: -20px; font-size: 1rem; border-radius: 11px; }
+    }
+    /* ===== B: SCREENSHOT-STYLE PROJECT CARDS ===== */
+    .preview-wrap::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 26px; z-index: 3;
+      background-color: var(--bg-elevated); border-bottom: 1px solid var(--border);
+      background-image:
+        radial-gradient(circle 3.5px at 14px 13px, #FF5F57 3px, transparent 4px),
+        radial-gradient(circle 3.5px at 28px 13px, #FEBC2E 3px, transparent 4px),
+        radial-gradient(circle 3.5px at 42px 13px, #28C840 3px, transparent 4px);
+    }
+    .preview-wrap { border-bottom: 1px solid var(--border); }
+    .project-card .card-title { font-size: 1.35rem; }
+    .project-card:hover { transform: translateY(-6px); }
+    /* ===== C: FEATURES SECTION ===== */
+    .features { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 5rem 2rem; }
+    .features-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 8vw, 5rem);
+      line-height: 0.95; margin-bottom: 3rem;
+    }
+    .features-title span { color: var(--text-secondary); }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .feat {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 1.6rem;
+      box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feat:hover { transform: translateY(-4px); box-shadow: var(--shadow-strong); }
+    .feat-num { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.1em; }
+    .feat h3 { font-size: 1.15rem; font-weight: 600; margin: 1.2rem 0 0.6rem; color: var(--text); }
+    .feat p { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
+    @media (max-width: 768px) {
+      .features { padding: 3.5rem 1.15rem; }
+      .features-grid { grid-template-columns: 1fr; }
+    }
+      /* ===== ORBIT ITEMS = PROJECT SCREENSHOTS ===== */
+    .orbit .item {
+      width: 84px; height: 84px; top: -42px; margin-left: -42px;
+      border-radius: 16px; overflow: hidden; padding: 0;
+      border: 3px solid var(--bg-elevated);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      background-color: #0A0A0A;
+    }
+    .orbit .item img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+    .orbit .item.fb {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #fff;
+    }
+    @media (max-width: 768px) {
+      .orbit .item { width: 60px; height: 60px; top: -30px; margin-left: -30px; border-radius: 12px; }
+    }
   </style>
 </head>
 <body>
   <div class="bg-pattern"></div>
+  <div class="site-floats" aria-hidden="true">
+    <div class="sf sf-1">⚡</div>
+    <div class="sf sf-2">◈</div>
+    <div class="sf sf-3">◆</div>
+    <div class="sf sf-4">▲</div>
+    <div class="sf sf-5">●</div>
+    <div class="sf sf-6">✦</div>
+    <div class="sf sf-7">◆</div>
+  </div>
 
   <nav>
     <button class="logo-btn" onclick="showView('home')">
-      <svg class="logo-img" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pixeltech">
-        <path d="M16 10h38c17 0 31 14 31 31 0 14-9 26-22 30l16 29H58L44 74H36v26H16V10zm20 18v28h16c8 0 15-7 15-14s-7-14-15-14H36z" fill="#2563EB"/>
-        <rect x="70" y="26" width="7" height="7" rx="1" fill="#2563EB"/>
-        <rect x="80" y="22" width="6" height="6" rx="1" fill="#2563EB" opacity="0.85"/>
-        <rect x="76" y="36" width="6" height="6" rx="1" fill="#2563EB" opacity="0.9"/>
-        <rect x="88" y="30" width="5" height="5" rx="1" fill="#2563EB" opacity="0.55"/>
-        <rect x="84" y="42" width="5" height="5" rx="1" fill="#2563EB" opacity="0.7"/>
-        <rect x="92" y="38" width="4" height="4" rx="1" fill="#2563EB" opacity="0.4"/>
-        <rect x="72" y="48" width="6" height="6" rx="1" fill="#2563EB" opacity="0.8"/>
-        <rect x="82" y="52" width="5" height="5" rx="1" fill="#2563EB" opacity="0.5"/>
-        <rect x="90" y="48" width="4" height="4" rx="1" fill="#2563EB" opacity="0.3"/>
-        <rect x="78" y="60" width="5" height="5" rx="1" fill="#2563EB" opacity="0.45"/>
-        <rect x="86" y="58" width="4" height="4" rx="1" fill="#2563EB" opacity="0.25"/>
-      </svg>
+      <img class="logo-img" src="logo.png" alt="Pixeltech" width="36" height="36" />
       <div class="logo-text">
         <div class="logo-name">Pixeltech</div>
         <div class="logo-sub">Web Studio</div>
@@ -877,20 +1122,36 @@
   <!-- HOME -->
   <div class="view active" id="view-home">
     <section class="hero">
-      <p class="hero-eyebrow">Pixeltech · Web Development Studio</p>
+      <div class="orbit" aria-hidden="true">
+        <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+      </div>
+      <!-- Floating decorative icons -->
+
+      <!-- Ambient glow (after floats so nth-child selectors stay intact) -->
+      <div class="hero-glow g1" aria-hidden="true"></div>
+      <div class="hero-glow g2" aria-hidden="true"></div>
+
+      <p class="hero-eyebrow fade-up" style="--d:0s">Pixeltech · Web Development Studio</p>
       <h1 class="hero-title">
-        Big Ideas<br>
-        <span class="line2">deserve better</span><br>
-        websites.
+        <span class="w" style="--i:0">Big</span>
+        <span class="w" style="--i:1">Ideas</span><br>
+        <span class="w line2" style="--i:2">deserve</span>
+        <span class="w line2" style="--i:3">better</span><br>
+        <span class="w" style="--i:4">websites.</span>
       </h1>
-      <p class="hero-desc">We design and build production-ready websites that look sharp, load fast, and convert. A curated selection of completed work.</p>
-      <div class="hero-actions">
+      <p class="hero-desc fade-up" style="--d:0.7s">We design and build production-ready websites that look sharp, load fast, and convert. A curated selection of completed work.</p>
+      <div class="hero-actions fade-up" style="--d:0.85s">
         <button class="btn btn-primary" onclick="document.getElementById('projects-section').scrollIntoView({behavior:'smooth'})">View Work →</button>
         <button class="btn" onclick="showView('login')">Admin Access</button>
       </div>
-      <div class="hero-meta">
+      <div class="hero-meta fade-up" style="--d:1s">
         <span>React · Vue · Node</span>
         <span>Open for projects</span>
+      </div>
+
+      <!-- Completed projects ticker (filled by script) -->
+      <div class="ticker hidden" id="ticker" aria-label="Recent projects">
+        <div class="ticker-track" id="ticker-track"></div>
       </div>
     </section>
 
@@ -920,22 +1181,31 @@
       </div>
     </section>
 
+    <section class="features" aria-labelledby="features-title">
+      <p class="section-label">02 / What's inside</p>
+      <h2 class="features-title" id="features-title">Built to load fast.<br><span>Built to be found.</span></h2>
+      <div class="features-grid">
+        <article class="feat">
+          <span class="feat-num">01</span>
+          <h3>Performance first</h3>
+          <p>Lean pages, optimized images and lazy-loaded media so your site loads quickly on any device.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-num">02</span>
+          <h3>Mobile-ready layouts</h3>
+          <p>Every layout is built mobile-first and checked on real phone screen sizes before launch.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-num">03</span>
+          <h3>Launch-ready handoff</h3>
+          <p>Clean, documented code and Firebase-backed content you can update without touching the source.</p>
+        </article>
+      </div>
+    </section>
+
     <footer>
       <div class="footer-left">
-        <svg class="logo-img" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;">
-          <path d="M16 10h38c17 0 31 14 31 31 0 14-9 26-22 30l16 29H58L44 74H36v26H16V10zm20 18v28h16c8 0 15-7 15-14s-7-14-15-14H36z" fill="#2563EB"/>
-          <rect x="70" y="26" width="7" height="7" rx="1" fill="#2563EB"/>
-          <rect x="80" y="22" width="6" height="6" rx="1" fill="#2563EB" opacity="0.85"/>
-          <rect x="76" y="36" width="6" height="6" rx="1" fill="#2563EB" opacity="0.9"/>
-          <rect x="88" y="30" width="5" height="5" rx="1" fill="#2563EB" opacity="0.55"/>
-          <rect x="84" y="42" width="5" height="5" rx="1" fill="#2563EB" opacity="0.7"/>
-          <rect x="92" y="38" width="4" height="4" rx="1" fill="#2563EB" opacity="0.4"/>
-          <rect x="72" y="48" width="6" height="6" rx="1" fill="#2563EB" opacity="0.8"/>
-          <rect x="82" y="52" width="5" height="5" rx="1" fill="#2563EB" opacity="0.5"/>
-          <rect x="90" y="48" width="4" height="4" rx="1" fill="#2563EB" opacity="0.3"/>
-          <rect x="78" y="60" width="5" height="5" rx="1" fill="#2563EB" opacity="0.45"/>
-          <rect x="86" y="58" width="4" height="4" rx="1" fill="#2563EB" opacity="0.25"/>
-        </svg>
+        <img class="logo-img" src="logo.png" alt="Pixeltech" width="32" height="32" style="width:32px;height:32px;" />
         <div>
           <div class="footer-name">Pixeltech</div>
           <div class="footer-copy">Developed by Arunraj · © <span id="year"></span></div>
@@ -1367,6 +1637,123 @@
     function escJs(s) {
       return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     }
+  </script>
+  <script>
+  (function () {
+    // 1) Scroll reveal for sections
+    const revealEls = document.querySelectorAll('.stats-bar, .projects-section');
+    revealEls.forEach(el => el.classList.add('reveal'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+
+    // 2) Hero ticker: built from already-rendered cards (no extra Firestore reads)
+    const container = document.getElementById('projects-container');
+    const ticker = document.getElementById('ticker');
+    const track = document.getElementById('ticker-track');
+
+    function buildTicker() {
+      const cards = container.querySelectorAll('.project-card');
+      track.textContent = '';
+      if (!cards.length) { ticker.classList.add('hidden'); return; }
+      ticker.classList.remove('hidden');
+
+      const frag = document.createDocumentFragment();
+      for (let set = 0; set < 2; set++) {
+        cards.forEach(c => {
+          const title = c.querySelector('.card-title')?.textContent ?? '';
+          const cat   = c.querySelector('.card-cat')?.textContent ?? '';
+          const badge = c.querySelector('.preview-badge');
+          const color = badge ? badge.style.background : '#0A0A0A';
+
+          const item = document.createElement('div');
+          item.className = 'ticker-item';
+          if (set === 1) item.setAttribute('aria-hidden', 'true');
+
+          const thumb = document.createElement('div');
+          thumb.className = 'thumb';
+          thumb.style.background = `linear-gradient(135deg, ${color}, #0A0A0A)`;
+          const letter = document.createElement('span');
+          letter.textContent = (title.charAt(0) || 'P').toUpperCase();
+          thumb.appendChild(letter);
+
+          const name = document.createElement('div');
+          name.className = 'name';
+          name.textContent = title;
+
+          const catEl = document.createElement('div');
+          catEl.className = 'cat';
+          catEl.textContent = cat;
+
+          item.append(thumb, name, catEl);
+          frag.appendChild(item);
+        });
+      }
+      track.appendChild(frag);
+      track.style.animationDuration = Math.max(18, cards.length * 7) + 's';
+    }
+
+    buildTicker();
+    new MutationObserver(buildTicker).observe(container, { childList: true });
+  })();
+  </script>
+  <script>
+  (function () {
+    const orbit = document.querySelector('.orbit');
+    const container = document.getElementById('projects-container');
+    const MAX_OUTER = 3, MAX_INNER = 2;
+    // Screenshot service: swap this function if you move to uploaded screenshots
+    const shot = url => 'https://image.thum.io/get/width/600/crop/450/' + url;
+
+    function build() {
+      orbit.querySelectorAll('.arm').forEach(n => n.remove());
+      const projects = [...container.querySelectorAll('.project-card')].map(c => ({
+        title: c.querySelector('.card-title')?.textContent ?? '',
+        url: c.querySelector('.card-link')?.href ?? '',
+        color: c.querySelector('.preview-badge')?.style.background || '#0A0A0A'
+      })).filter(p => p.url).slice(0, MAX_OUTER + MAX_INNER);
+
+      const outer = projects.slice(0, MAX_OUTER);
+      const inner = projects.slice(MAX_OUTER);
+
+      const place = (list, isInner, dur, offset) => list.forEach((p, i) => {
+        const arm = document.createElement('div');
+        arm.className = 'arm' + (isInner ? ' inner' : '');
+        arm.style.setProperty('--s', (offset + i * 360 / list.length) + 'deg');
+        arm.style.setProperty('--d', dur + 's');
+
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.style.background = p.color;
+
+        const img = new Image();
+        img.alt = p.title;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.src = shot(p.url);
+        img.onerror = () => {
+          img.remove();
+          item.classList.add('fb');
+          item.textContent = (p.title.charAt(0) || 'P').toUpperCase();
+        };
+        item.appendChild(img);
+        arm.appendChild(item);
+        orbit.appendChild(arm);
+      });
+
+      place(outer, false, 42, 0);
+      place(inner, true, 28, 60);
+    }
+
+    build();
+    new MutationObserver(build).observe(container, { childList: true });
+  })();
   </script>
 </body>
 </html>
