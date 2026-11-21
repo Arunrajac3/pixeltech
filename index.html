@@ -494,6 +494,36 @@
   .work-feature .work-meta { display: inline-block; margin-right: 1.25rem; text-align: left; }
   .work-feature .work-visit { display: inline-block; }
   @media (max-width: 640px) { .work-shots { grid-template-columns: 1fr; } .work-shots img { height: 200px; } }
+
+  .lstats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-bottom:12px; }
+  .lstat { background:#fff; border:1px solid #DCE8E5; border-radius:12px; padding:12px; text-align:center; }
+  .lstat small { color:#55706C; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+  .lstat b { display:block; font-size:22px; margin-top:4px; color:#0F2A28; }
+  .lcool { font-size:14px; font-weight:600; margin:4px 0 12px; }
+  .lbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+  .lbar input[type=text], .lbar select { padding:9px 10px; border:1px solid #CFE0DC; border-radius:8px; font:inherit; background:#fff; }
+  .lcards { display:grid; gap:12px; }
+  .lcard { background:#fff; border:1px solid #DCE8E5; border-radius:14px; padding:16px 16px 16px 20px; position:relative; overflow:hidden; }
+  .lcard::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:#9FB7B2; }
+  .lcard[data-st="Contacted"]::before { background:#3b82f6; }
+  .lcard[data-st="Replied"]::before { background:#f59e0b; }
+  .lcard[data-st="Won"]::before { background:#10b981; }
+  .lcard[data-st="Rejected"]::before { background:#ef4444; }
+  .lname { font-weight:700; font-size:17px; color:#0F2A28; }
+  .lmeta { color:#55706C; font-size:14px; margin-top:6px; line-height:1.5; }
+  .lchip { display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; background:#EEF0EC; color:#55706C; margin:6px 4px 0 0; }
+  .lchip.ok { background:#E3F4F1; color:#0C7A6E; }
+  .lchip.no { background:#FFF3DC; color:#9A6A00; }
+  .lacts { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  .lacts select { padding:8px 10px; border:1px solid #CFE0DC; border-radius:8px; font:inherit; font-size:13px; }
+  .lbtn { display:inline-flex; align-items:center; padding:8px 12px; border-radius:8px; border:1px solid #CFE0DC; background:#fff; color:#0F2A28; font:inherit; font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; }
+  .lbtn.wa { background:#128C4A; border-color:#128C4A; color:#fff; }
+  .lbtn.red { color:#B3261E; border-color:#E9C4C4; }
+  .lbtn.off { opacity:.5; cursor:not-allowed; }
+  .lnote { width:100%; margin-top:10px; padding:8px 10px; border:1px solid #CFE0DC; border-radius:8px; font:inherit; font-size:13px; }
+  .lempty { color:#55706C; text-align:center; padding:30px; border:1px dashed #CFE0DC; border-radius:12px; }
+  .ltoast { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#101815; color:#fff; padding:9px 14px; border-radius:8px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:60; }
+  .ltoast.on { opacity:1; }
 </style>
 </head>
 <body>
@@ -518,7 +548,7 @@
 <div class="admin-bar hidden" id="adminBar" role="status">
   <div class="wrap">
     <span>Signed in as admin</span>
-    <span><a href="#admin">Manage projects</a><button id="adminBarLogout" type="button">Log out</button></span>
+    <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <a href="#leads">Leads</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Log out</button></span>
   </div>
 </div>
 
@@ -894,6 +924,61 @@
 
 </main>
 
+<section class="sec hidden" id="leads">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Admin</p>
+      <h2 class="display">Pixeltech leads.</h2>
+      <p>Leads, status and notes sync live through Firestore. Only visible when signed in as admin.</p>
+    </div>
+    <div class="lstats">
+      <div class="lstat"><small>Total</small><b id="lS1">0</b></div>
+      <div class="lstat"><small>WhatsApp ready</small><b id="lS2">0</b></div>
+      <div class="lstat"><small>Contacted</small><b id="lS3">0</b></div>
+      <div class="lstat"><small>Replied</small><b id="lS4">0</b></div>
+      <div class="lstat"><small>Won</small><b id="lS5">0</b></div>
+      <div class="lstat"><small>Sent today</small><b id="lS6">0/25</b></div>
+    </div>
+    <div id="lCool" class="lcool"></div>
+
+    <div class="admin-form" style="margin-bottom:16px">
+      <h3 style="margin-bottom:10px">WhatsApp message template</h3>
+      <textarea id="lTpl" rows="6" style="width:100%;padding:10px;border:1px solid #CFE0DC;border-radius:10px;font:inherit"></textarea>
+      <div class="factions">
+        <button class="btn btn-sm" type="button" onclick="lSaveTpl()">Save message</button>
+        <button class="btn btn-sm ghost" type="button" onclick="lResetTpl()">Reset to default</button>
+      </div>
+      <p class="muted" style="font-size:12px;margin-top:8px">Use {name} for the clinic name and {link} for the demo link. Limits: 25 chats per day, 3 minutes between chats, 8 per hour.</p>
+    </div>
+
+    <div class="admin-form" style="margin-bottom:16px">
+      <h3 style="margin-bottom:10px">Add lead, import or backup</h3>
+      <div class="fgrid">
+        <label>Business name<input id="lName"></label>
+        <label>Phone (10 digits)<input id="lPhone" inputmode="numeric"></label>
+        <label>Category<input id="lNiche" placeholder="Clinic"></label>
+        <label>Address / city<input id="lAddr"></label>
+      </div>
+      <div class="factions">
+        <button class="btn btn-sm" type="button" onclick="lAdd()">Add lead</button>
+        <button class="btn btn-sm ghost" type="button" onclick="document.getElementById('lFile').click()">Import Apify JSON</button>
+        <button class="btn btn-sm ghost" type="button" onclick="lExport()">Backup</button>
+        <input type="file" id="lFile" accept=".json,application/json" hidden onchange="lImport(this.files[0])">
+      </div>
+      <p id="lAMsg" class="muted" style="font-size:13px;margin-top:8px"></p>
+    </div>
+
+    <div class="lbar">
+      <input id="lQ" type="text" placeholder="Search name, phone, city..." style="flex:1;min-width:200px">
+      <select id="lStatus"><option value="">All status</option><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select>
+      <select id="lSort"><option value="rev">Most reviews</option><option value="rate">Highest rating</option><option value="name">Name A-Z</option></select>
+      <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="lWa"> Only WhatsApp numbers</label>
+    </div>
+    <div id="lList" class="lcards"></div>
+  </div>
+  <div id="lToast" class="ltoast"></div>
+</section>
+
 <footer>
   <div class="wrap">
     <span>© <span id="year"></span> Pixeltech</span>
@@ -935,7 +1020,7 @@
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    getFirestore, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy
+    getFirestore, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, setDoc, onSnapshot, writeBatch
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1028,6 +1113,8 @@
     $("logoutBtn").classList.toggle("hidden", !isAdmin);
     $("adminBar").classList.toggle("hidden", !isAdmin);
     $("admin").classList.toggle("hidden", !isAdmin);
+    $("leads").classList.toggle("hidden", !isAdmin);
+    if (isAdmin) lStart(); else lStop();
     if (isAdmin) renderAdminList();
   }
 
@@ -1166,6 +1253,169 @@
       $("saveBtn").disabled = false;
     }
   });
+
+  // ---------- Pixeltech Leads (admin only; same Firestore collection as the leads tracker) ----------
+  const LCOL = "clinic_leads";
+  const L_DAILY = 25, L_GAP = 3 * 60 * 1000, L_HOURLY = 8, L_HOUR = 3600 * 1000;
+  const L_DEMO = "https://arunrajac3.github.io/clinic-demo/";
+  const L_TPL = "Dear {name} team,\n\nI am Arunraj, a web developer. I have prepared a short demo of a professional website designed for clinics, with online appointment booking, service pages and WhatsApp enquiries.\n\nYou can view it here: {link}\n\nWould you be open to a brief look at it? I would be glad to hear your thoughts.\n\nThank you for your time.\nArunraj";
+  let lLeads = [], lUnsub = null;
+  const lTimers = {};
+  const lFmt = ms => { const t = Math.ceil(ms / 1000); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+  function lToastMsg(t) { const el = $("lToast"); el.textContent = t; el.classList.add("on"); clearTimeout(lToastMsg.t); lToastMsg.t = setTimeout(() => el.classList.remove("on"), 2000); }
+  function lSends() { return JSON.parse(localStorage.getItem("arunraj_sends") || "[]").filter(t => Date.now() - t < 24 * L_HOUR); }
+  function lSentToday() { const d = new Date().toDateString(); return lSends().filter(t => new Date(t).toDateString() === d).length; }
+  function lWait() {
+    const log = lSends(), now = Date.now();
+    if (!log.length) return 0;
+    if (lSentToday() >= L_DAILY) return -1;
+    let w = Math.max(0, log[log.length - 1] + L_GAP - now);
+    const lastHour = log.filter(t => now - t < L_HOUR);
+    if (lastHour.length >= L_HOURLY) w = Math.max(w, lastHour[0] + L_HOUR - now);
+    return w;
+  }
+  function lWaLink(l) {
+    if (!l.mobile) return "";
+    const tpl = localStorage.getItem("arunraj_tpl_v3") || L_TPL;
+    const msg = tpl.replace(/\{name\}/g, l.name).replace(/\{link\}/g, L_DEMO);
+    return "https://wa.me/91" + l.mobile + "?text=" + encodeURIComponent(msg);
+  }
+  window.lCountSend = () => {
+    const w = lWait();
+    if (w === -1) { lToastMsg("Daily limit of " + L_DAILY + " reached."); return false; }
+    if (w > 0) { lToastMsg("Please wait " + lFmt(w) + " before the next chat."); return false; }
+    const log = lSends(); log.push(Date.now());
+    localStorage.setItem("arunraj_sends", JSON.stringify(log));
+    setTimeout(lRender, 0); setTimeout(lRender, L_GAP + 500);
+    return true;
+  };
+  function lStart() {
+    if (lUnsub) return;
+    $("lTpl").value = localStorage.getItem("arunraj_tpl_v3") || L_TPL;
+    lUnsub = onSnapshot(collection(db, LCOL), snap => {
+      lLeads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      lRender();
+    }, err => lToastMsg("Sync error: " + err.message));
+  }
+  function lStop() { if (lUnsub) { lUnsub(); lUnsub = null; } lLeads = []; }
+
+  window.lSetStatus = (id, v) => updateDoc(doc(db, LCOL, id), { status: v, updatedAt: Date.now() }).catch(e => lToastMsg(e.message));
+  window.lDel = id => { if (confirm("Delete this lead?")) deleteDoc(doc(db, LCOL, id)).catch(e => lToastMsg(e.message)); };
+  window.lNoteInput = (id, v) => { clearTimeout(lTimers[id]); lTimers[id] = setTimeout(() => lSaveNote(id, v), 600); };
+  window.lNoteSave = (id, v) => { clearTimeout(lTimers[id]); lSaveNote(id, v); };
+  function lSaveNote(id, v) { updateDoc(doc(db, LCOL, id), { notes: v, updatedAt: Date.now() }).then(() => lToastMsg("Note saved")).catch(e => lToastMsg(e.message)); }
+  window.lSaveTpl = () => { localStorage.setItem("arunraj_tpl_v3", $("lTpl").value); lToastMsg("Message saved"); lRender(); };
+  window.lResetTpl = () => { localStorage.removeItem("arunraj_tpl_v3"); $("lTpl").value = L_TPL; lToastMsg("Default restored"); lRender(); };
+
+  window.lAdd = async () => {
+    const name = $("lName").value.trim(), digits = $("lPhone").value.replace(/\D/g, "").slice(-10);
+    if (!name) return ($("lAMsg").textContent = "Enter a business name.");
+    const mob = /^[6-9]\d{9}$/.test(digits) ? digits : "";
+    const id = "m" + Date.now();
+    await setDoc(doc(db, LCOL, id), { name, phone: digits, mobile: mob, niche: $("lNiche").value.trim() || "Clinic", address: $("lAddr").value.trim(), city: "", rating: null, reviews: 0, hours: "", maps: "", status: "New", notes: "", src: "manual", added: new Date().toLocaleDateString() });
+    ["lName","lPhone","lNiche","lAddr"].forEach(i => $(i).value = "");
+    $("lAMsg").textContent = "Added.";
+  };
+  // Apify Google Places export. Same placeId = same lead, so importing again never duplicates.
+  window.lImport = file => {
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = async () => {
+      let arr;
+      try { arr = JSON.parse(r.result); } catch (e) { return lToastMsg("Not a valid JSON file"); }
+      if (!Array.isArray(arr)) return lToastMsg("Expected a list of places");
+      const existing = new Set((await getDocs(collection(db, LCOL))).docs.map(d => d.id));
+      const batch = writeBatch(db);
+      let added = 0;
+      arr.forEach(x => {
+        const id = x.placeId, name = (x.title || "").trim();
+        if (!id || !name || existing.has(id)) return;
+        const pu = (x.phoneUnformatted || "").replace(/\s/g, "");
+        const m = pu.match(/^\+91([6-9]\d{9})$/);
+        batch.set(doc(db, LCOL, id), {
+          name, niche: x.categoryName || "Clinic", phone: pu.replace(/^\+91/, ""), mobile: m ? m[1] : "",
+          address: x.address || "", city: x.city || "", rating: x.totalScore ?? null, reviews: x.reviewsCount || 0,
+          hours: (x.openingHours || []).slice(0, 7).map(h => `${h.day.slice(0, 3)} ${h.hours}`).join(" · "),
+          maps: x.url || "", status: "New", notes: "", src: "apify", added: new Date().toLocaleDateString()
+        });
+        added++;
+      });
+      if (added) await batch.commit();
+      lToastMsg(`${added} new lead${added === 1 ? "" : "s"} added`);
+      $("lFile").value = "";
+    };
+    r.readAsText(file);
+  };
+  window.lExport = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(lLeads, null, 2)], { type: "application/json" }));
+    a.download = "pixeltech_leads_backup.json";
+    a.click();
+  };
+
+  function lRender() {
+    if ($("leads").classList.contains("hidden")) return;
+    $("lS1").textContent = lLeads.length;
+    $("lS2").textContent = lLeads.filter(l => l.mobile).length;
+    $("lS3").textContent = lLeads.filter(l => l.status === "Contacted").length;
+    $("lS4").textContent = lLeads.filter(l => l.status === "Replied").length;
+    $("lS5").textContent = lLeads.filter(l => l.status === "Won").length;
+    $("lS6").textContent = lSentToday() + "/" + L_DAILY;
+
+    // Keep the note being typed while the list refreshes
+    const active = document.activeElement;
+    const keep = active && active.classList && active.classList.contains("lnote") ? { id: active.dataset.id, v: active.value, pos: active.selectionStart } : null;
+
+    const q = $("lQ").value.trim().toLowerCase(), st = $("lStatus").value, onlyWa = $("lWa").checked, sort = $("lSort").value;
+    const list = lLeads.filter(l => (!q || [l.name, l.phone, l.city, l.address].join(" ").toLowerCase().includes(q)) && (!st || l.status === st) && (!onlyWa || l.mobile))
+      .sort((a, b) => sort === "rev" ? (b.reviews || 0) - (a.reviews || 0) : sort === "rate" ? (b.rating || 0) - (a.rating || 0) : String(a.name).localeCompare(String(b.name)));
+    if (!list.length) { $("lList").innerHTML = '<div class="lempty">No leads yet. Import an Apify file or add one above.</div>'; return; }
+
+    $("lList").innerHTML = list.map(l => {
+      const wa = lWaLink(l), w = lWait();
+      const waBtn = !wa ? "" : w === 0
+        ? `<a class="lbtn wa" href="${esc(wa)}" target="_blank" rel="noopener" onclick="return lCountSend();">WhatsApp chat</a>`
+        : `<span class="lbtn off">${w === -1 ? "Daily limit reached" : "Wait " + lFmt(w)}</span>`;
+      const rating = l.rating ? `★ ${Number(l.rating).toFixed(1)} · ${l.reviews || 0} reviews` : (l.reviews ? `${l.reviews} reviews` : "No rating");
+      return `<div class="lcard" data-st="${esc(l.status)}">
+        <div class="lname">${esc(l.name)}</div>
+        <div>
+          <span class="lchip">${esc(l.niche)}</span>
+          ${l.mobile ? '<span class="lchip ok">WhatsApp number</span>' : (l.phone ? '<span class="lchip no">Landline / other</span>' : '<span class="lchip no">No phone</span>')}
+        </div>
+        <div class="lmeta">
+          ${l.phone ? `📞 <b>+91 ${esc(l.phone)}</b>` : "📞 <b>No number</b>"}<br>
+          ${l.address ? `📍 ${esc(l.address)}<br>` : ""}
+          ${l.hours ? `🕒 ${esc(l.hours)}<br>` : ""}
+          ⭐ ${esc(rating)}
+        </div>
+        <div class="lacts">
+          <select onchange="lSetStatus('${esc(l.id)}', this.value)">${["New","Contacted","Replied","Won","Rejected"].map(s => `<option ${s === l.status ? "selected" : ""}>${s}</option>`).join("")}</select>
+          ${waBtn}
+          ${l.phone ? `<a class="lbtn" href="tel:+91${esc(l.phone)}">Call</a>` : ""}
+          ${l.maps ? `<a class="lbtn" href="${esc(l.maps)}" target="_blank" rel="noopener">Maps</a>` : ""}
+          <button class="lbtn red" type="button" onclick="lDel('${esc(l.id)}')">Delete</button>
+        </div>
+        <textarea class="lnote" rows="1" data-id="${esc(l.id)}" placeholder="Notes (owner name, follow-up date...)" oninput="lNoteInput('${esc(l.id)}', this.value)" onblur="lNoteSave('${esc(l.id)}', this.value)">${esc(l.notes || "")}</textarea>
+      </div>`;
+    }).join("");
+
+    if (keep) {
+      const el = document.querySelector(`textarea.lnote[data-id="${CSS.escape(keep.id)}"]`);
+      if (el) { el.value = keep.v; el.focus(); el.setSelectionRange(keep.pos, keep.pos); }
+    }
+  }
+  $("lQ").addEventListener("input", lRender);
+  $("lStatus").addEventListener("change", lRender);
+  $("lSort").addEventListener("change", lRender);
+  $("lWa").addEventListener("change", lRender);
+  setInterval(() => {
+    const w = lWait(), el = $("lCool");
+    if (!el) return;
+    el.textContent = w === -1 ? "Daily limit of " + L_DAILY + " reached. Continue tomorrow." : w > 0 ? "Next WhatsApp chat in " + lFmt(w) + "." : "Ready to send.";
+    el.style.color = w === 0 ? "#0C7A6E" : "#9A6A00";
+  }, 1000);
+  setInterval(lRender, 60000);
 
   // ---------- Boot ----------
   applyAdminUI();
