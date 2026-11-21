@@ -556,6 +556,10 @@
   .ldetails { margin-top:8px; padding-top:8px; }
   .lselall { margin:4px 0 8px; }
   .lempty { padding:20px; }
+
+  .lgroups { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .lgchip { border:1px solid #CFE0DC; background:#fff; color:#0F2A28; border-radius:999px; padding:6px 12px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; }
+  .lgchip.on { background:#0C7A6E; border-color:#0C7A6E; color:#fff; }
 </style>
 </head>
 <body>
@@ -1000,6 +1004,7 @@
       <p id="lAMsg" class="muted" style="font-size:13px;margin-top:8px"></p>
     </div>
 
+    <div class="lgroups" id="lGroups"></div>
     <div class="lbar">
       <input id="lQ" type="text" placeholder="Search name, phone, city..." style="flex:1;min-width:200px">
       <select id="lStatus"><option value="">All status</option><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select>
@@ -1365,24 +1370,33 @@
       try { arr = JSON.parse(r.result); } catch (e) { return lToastMsg("Not a valid JSON file"); }
       if (!Array.isArray(arr)) return lToastMsg("Expected a list of places");
       const existing = new Set((await getDocs(collection(db, LCOL))).docs.map(d => d.id));
-      const batch = writeBatch(db);
-      let added = 0;
+      const rows = [];
       arr.forEach(x => {
         const id = x.placeId, name = (x.title || "").trim();
         if (!id || !name || existing.has(id)) return;
         const pu = (x.phoneUnformatted || "").replace(/\s/g, "");
         const m = pu.match(/^\+91([6-9]\d{9})$/);
-        batch.set(doc(db, LCOL, id), {
+        const lead = {
           name, niche: x.categoryName || "Clinic", phone: pu.replace(/^\+91/, ""), mobile: m ? m[1] : "",
           address: x.address || "", city: x.city || "", rating: x.totalScore ?? null, reviews: x.reviewsCount || 0,
           hours: (x.openingHours || []).slice(0, 7).map(h => `${h.day.slice(0, 3)} ${h.hours}`).join(" · "),
           maps: x.url || "", status: "New", notes: "", src: "apify", added: new Date().toLocaleDateString()
-        });
-        added++;
+        };
+        lead.group = lGroupOf(lead);
+        rows.push([id, lead]);
       });
-      if (added) await batch.commit();
+      // Firestore allows at most 500 writes per batch, so write in chunks of 400
+      for (let i = 0; i < rows.length; i += 400) {
+        const b = writeBatch(db);
+        rows.slice(i, i + 400).forEach(([id, lead]) => b.set(doc(db, LCOL, id), lead));
+        await b.commit();
+      }
+      const added = rows.length;
+      const counts = {};
+      rows.forEach(([, l]) => { counts[l.group] = (counts[l.group] || 0) + 1; });
+      window.__lSummary = Object.entries(counts).map(([g, n]) => g + " " + n).join(", ") || "none";
       lToastMsg(`${added} new lead${added === 1 ? "" : "s"} added`);
-      $("lAMsg").textContent = `${added} new lead${added === 1 ? "" : "s"} imported. Duplicates were skipped.`;
+      $("lAMsg").textContent = `${added} new lead${added === 1 ? "" : "s"} imported (${window.__lSummary}). Duplicates were skipped.`;
       $("lFile").value = "";
       } catch (e) {
         // Shows the real reason (usually Firestore rules blocking clinic_leads)
@@ -1399,6 +1413,24 @@
     a.download = "clinic_leads_backup.json";
     a.click();
   };
+
+  // ---------- Category grouping (automatic, from the Google category name) ----------
+  const L_GROUPS = [
+    ["Schools", /school|college|tuition|coaching|academy|institute|playschool|preschool|kindergarten|education/i],
+    ["Salons", /salon|beauty|spa\b|barber|parlou?r|makeup|hair/i],
+    ["Gyms", /gym|fitness|yoga|crossfit|zumba/i],
+    ["Real estate", /real estate|property|builder|realtor|plots?\b|apartment|housing/i],
+    ["Clinics", /clinic|hospital|dental|dentist|doctor|medical|diagnostic|physio|eye|\bENT\b/i]
+  ];
+  const L_PAGE = 60;
+  let lGroup = "", lShow = L_PAGE;
+  function lGroupOf(l) {
+    for (const [g, re] of L_GROUPS) if (re.test(l.niche || "")) return g;
+    for (const [g, re] of L_GROUPS) if (re.test(l.name || "")) return g;
+    return "Other";
+  }
+  window.lSetGroup = g => { lGroup = g === "All" ? "" : g; lShow = L_PAGE; lRender(); };
+  window.lMore = () => { lShow += L_PAGE; lRender(); };
 
   // Selection and expanded-details state survive re-renders
   const lSel = new Set(), lOpen = new Set();
@@ -1439,10 +1471,20 @@
     const active = document.activeElement;
     const keep = active && active.classList && active.classList.contains("lnote") ? { id: active.dataset.id, v: active.value, pos: active.selectionStart } : null;
 
+    // Category chips with counts
+    const groups = ["All", "Schools", "Salons", "Gyms", "Real estate", "Clinics", "Other"];
+    const gcount = {};
+    lLeads.forEach(l => { const g = l.group || lGroupOf(l); gcount[g] = (gcount[g] || 0) + 1; });
+    $("lGroups").innerHTML = groups.map(g => {
+      const n = g === "All" ? lLeads.length : (gcount[g] || 0), on = (g === "All" && !lGroup) || g === lGroup;
+      return `<button class="lgchip ${on ? "on" : ""}" type="button" onclick="lSetGroup('${g}')">${g} · ${n}</button>`;
+    }).join("");
+
     const q = $("lQ").value.trim().toLowerCase(), st = $("lStatus").value, onlyWa = $("lWa").checked, sort = $("lSort").value;
-    const list = lLeads.filter(l => (!q || [l.name, l.phone, l.city, l.address].join(" ").toLowerCase().includes(q)) && (!st || l.status === st) && (!onlyWa || l.mobile))
-      .sort((a, b) => sort === "rev" ? (b.reviews || 0) - (a.reviews || 0) : sort === "rate" ? (b.rating || 0) - (a.rating || 0) : String(a.name).localeCompare(String(b.name)));
-    if (!list.length) { $("lList").innerHTML = '<div class="lempty">No leads yet. Import an Apify file or add one above.</div>'; lRenderBulk(); return; }
+    const all = lLeads.filter(l => (!lGroup || (l.group || lGroupOf(l)) === lGroup) && (!q || [l.name, l.phone, l.city, l.address].join(" ").toLowerCase().includes(q)) && (!st || l.status === st) && (!onlyWa || l.mobile));
+    all.sort((a, b) => sort === "rev" ? (b.reviews || 0) - (a.reviews || 0) : sort === "rate" ? (b.rating || 0) - (a.rating || 0) : String(a.name).localeCompare(String(b.name)));
+    const list = all.slice(0, lShow);
+    if (!all.length) { $("lList").innerHTML = '<div class="lempty">No leads here yet. Import an Apify file or change the category.</div>'; lRenderBulk(); return; }
 
     $("lList").innerHTML = list.map(l => {
       const id = esc(l.id), wa = lWaLink(l), w = lWait(), open = lOpen.has(l.id);
@@ -1468,7 +1510,8 @@
         <textarea class="lnote" rows="1" data-id="${id}" placeholder="Notes (owner name, follow-up date...)" oninput="lNoteInput('${id}', this.value)" onblur="lNoteSave('${id}', this.value)">${esc(l.notes || "")}</textarea>
         ${open ? `<div class="ldetails">
           <div>
-            <span class="lchip">${esc(l.niche)}</span>
+            <span class="lchip">${esc(l.group || lGroupOf(l))}</span>
+          <span class="lchip">${esc(l.niche)}</span>
             ${l.mobile ? '<span class="lchip ok">WhatsApp number</span>' : (l.phone ? '<span class="lchip no">Landline / other</span>' : '<span class="lchip no">No phone</span>')}
           </div>
           <div class="lmeta">
@@ -1479,7 +1522,7 @@
           </div>
         </div>` : ""}
       </div>`;
-    }).join("");
+    }).join("") + (all.length > lShow ? `<div style="text-align:center"><button class="lbtn" type="button" onclick="lMore()">Show more (${all.length - lShow} left)</button></div>` : "");
 
     if (keep) {
       const el = document.querySelector(`textarea.lnote[data-id="${CSS.escape(keep.id)}"]`);
@@ -1487,10 +1530,11 @@
     }
     lRenderBulk();
   }
-  $("lQ").addEventListener("input", lRender);
-  $("lStatus").addEventListener("change", lRender);
-  $("lSort").addEventListener("change", lRender);
-  $("lWa").addEventListener("change", lRender);
+  const lResetAndRender = () => { lShow = L_PAGE; lRender(); };
+  $("lQ").addEventListener("input", lResetAndRender);
+  $("lStatus").addEventListener("change", lResetAndRender);
+  $("lSort").addEventListener("change", lResetAndRender);
+  $("lWa").addEventListener("change", lResetAndRender);
   setInterval(() => {
     const w = lWait(), el = $("lCool");
     if (!el) return;
