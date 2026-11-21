@@ -548,7 +548,7 @@
 <div class="admin-bar hidden" id="adminBar" role="status">
   <div class="wrap">
     <span>Signed in as admin</span>
-    <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <a href="#leads">Leads</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Log out</button></span>
+    <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <a href="#leads">Clinic leads</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Log out</button></span>
   </div>
 </div>
 
@@ -928,8 +928,8 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Admin</p>
-      <h2 class="display">Pixeltech leads.</h2>
-      <p>Leads, status and notes sync live through Firestore. Only visible when signed in as admin.</p>
+      <h2 class="display">Clinic leads.</h2>
+      <p>Clinic leads, status and notes sync live through Firestore. Only visible when signed in as admin.</p>
     </div>
     <div class="lstats">
       <div class="lstat"><small>Total</small><b id="lS1">0</b></div>
@@ -1254,7 +1254,7 @@
     }
   });
 
-  // ---------- Pixeltech Leads (admin only; same Firestore collection as the leads tracker) ----------
+  // ---------- Clinic Leads (admin only; Firestore collection clinic_leads) ----------
   const LCOL = "clinic_leads";
   const L_DAILY = 25, L_GAP = 3 * 60 * 1000, L_HOURLY = 8, L_HOUR = 3600 * 1000;
   const L_DEMO = "https://arunrajac3.github.io/clinic-demo/";
@@ -1321,6 +1321,7 @@
     if (!file) return;
     const r = new FileReader();
     r.onload = async () => {
+      try {
       let arr;
       try { arr = JSON.parse(r.result); } catch (e) { return lToastMsg("Not a valid JSON file"); }
       if (!Array.isArray(arr)) return lToastMsg("Expected a list of places");
@@ -1342,14 +1343,21 @@
       });
       if (added) await batch.commit();
       lToastMsg(`${added} new lead${added === 1 ? "" : "s"} added`);
+      $("lAMsg").textContent = `${added} new lead${added === 1 ? "" : "s"} imported. Duplicates were skipped.`;
       $("lFile").value = "";
+      } catch (e) {
+        // Shows the real reason (usually Firestore rules blocking clinic_leads)
+        const msg = /permission/i.test(e.message) ? "Import blocked by Firestore Rules. Add the clinic_leads rule and publish." : "Import failed: " + e.message;
+        $("lAMsg").textContent = msg; $("lAMsg").style.color = "#B3261E";
+        lToastMsg(msg);
+      }
     };
     r.readAsText(file);
   };
   window.lExport = () => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(lLeads, null, 2)], { type: "application/json" }));
-    a.download = "pixeltech_leads_backup.json";
+    a.download = "clinic_leads_backup.json";
     a.click();
   };
 
