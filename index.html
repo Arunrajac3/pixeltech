@@ -560,6 +560,8 @@
   .lgroups { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
   .lgchip { border:1px solid #CFE0DC; background:#fff; color:#0F2A28; border-radius:999px; padding:6px 12px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; }
   .lgchip.on { background:#0C7A6E; border-color:#0C7A6E; color:#fff; }
+
+  .ldel select { width:100%; padding:9px 10px; border:1px solid #CFE0DC; border-radius:8px; font:inherit; background:#fff; }
 </style>
 </head>
 <body>
@@ -1004,6 +1006,21 @@
       <p id="lAMsg" class="muted" style="font-size:13px;margin-top:8px"></p>
     </div>
 
+    <div class="admin-form ldel" style="margin-bottom:16px">
+      <h3 style="margin-bottom:6px">Bulk delete</h3>
+      <p class="muted" style="font-size:12px;margin-bottom:10px">Pick the leads to remove, then check the count. Use this to clean the list before a fresh import. This cannot be undone.</p>
+      <div class="fgrid">
+        <label>Category<select id="lDelGroup"><option value="">Any</option><option>Schools</option><option>Salons</option><option>Gyms</option><option>Real estate</option><option>Clinics</option><option>Other</option></select></label>
+        <label>WhatsApp number<select id="lDelWa"><option value="">Any</option><option value="yes">With WhatsApp</option><option value="no">Without WhatsApp</option></select></label>
+        <label>Website<select id="lDelWeb"><option value="">Any</option><option value="yes">Has website</option><option value="no">No website</option><option value="unk">Not checked yet</option></select></label>
+        <label>Status<select id="lDelStatus"><option value="">Any</option><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select></label>
+      </div>
+      <div class="factions" style="align-items:center">
+        <span id="lDelCount" class="muted" style="font-size:13px;margin-right:auto"></span>
+        <button class="lbtn red" id="lDelBtn" type="button" onclick="lDelRun()">Delete matching</button>
+      </div>
+    </div>
+
     <div class="lgroups" id="lGroups"></div>
     <div class="lbar">
       <input id="lQ" type="text" placeholder="Search name, phone, city..." style="flex:1;min-width:200px">
@@ -1017,6 +1034,7 @@
       <span id="lBulkCount"></span>
       <select id="lBulkStatus"><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select>
       <button class="lbtn wa" type="button" onclick="lBulkApply()">Apply to selected</button>
+      <button class="lbtn red" type="button" onclick="lDelSelected()">Delete selected</button>
       <button class="lbtn" type="button" onclick="lBulkClear()">Clear</button>
     </div>
     <div id="lList" class="lcards"></div>
@@ -1442,6 +1460,40 @@
   window.lSetGroup = g => { lGroup = g === "All" ? "" : g; lShow = L_PAGE; lRender(); };
   window.lMore = () => { lShow += L_PAGE; lRender(); };
 
+  // ---------- Bulk delete ----------
+  function lDelMatch(l) {
+    const g = $("lDelGroup").value, wa = $("lDelWa").value, web = $("lDelWeb").value, st = $("lDelStatus").value;
+    return (!g || (l.group || lGroupOf(l)) === g)
+      && (!wa || (wa === "yes" ? !!l.mobile : !l.mobile))
+      && (!web || (web === "yes" ? !!l.website : web === "no" ? (!!l.webChecked && !l.website) : !l.webChecked))
+      && (!st || l.status === st);
+  }
+  function lDelUpdate() {
+    const hasCriteria = ["lDelGroup","lDelWa","lDelWeb","lDelStatus"].some(id => $(id).value !== "");
+    const n = hasCriteria ? lLeads.filter(lDelMatch).length : 0;
+    $("lDelCount").textContent = hasCriteria ? n + " lead(s) match" : "Pick at least one filter";
+    $("lDelBtn").disabled = n === 0;
+    $("lDelBtn").style.opacity = n === 0 ? ".5" : "1";
+  }
+  async function lDeleteIds(ids, label) {
+    if (!ids.length) return lToastMsg("Nothing to delete");
+    const typed = prompt(`Type DELETE to remove ${ids.length} ${label} lead(s). This cannot be undone.`);
+    if (typed !== "DELETE") return lToastMsg("Delete cancelled");
+    try {
+      for (let i = 0; i < ids.length; i += 400) {
+        const b = writeBatch(db);
+        ids.slice(i, i + 400).forEach(id => b.delete(doc(db, LCOL, id)));
+        await b.commit();
+      }
+      ids.forEach(id => lSel.delete(id));
+      lToastMsg(ids.length + " lead(s) deleted");
+    } catch (e) { lToastMsg("Delete failed: " + e.message); }
+    lDelUpdate();
+  }
+  window.lDelRun = () => lDeleteIds(lLeads.filter(lDelMatch).map(l => l.id), "matching");
+  window.lDelSelected = () => lDeleteIds([...lSel], "selected");
+  ["lDelGroup","lDelWa","lDelWeb","lDelStatus"].forEach(id => $(id).addEventListener("change", lDelUpdate));
+
   // Selection and expanded-details state survive re-renders
   const lSel = new Set(), lOpen = new Set();
   window.lToggleDetails = id => { lOpen.has(id) ? lOpen.delete(id) : lOpen.add(id); lRender(); };
@@ -1542,6 +1594,7 @@
       if (el) { el.value = keep.v; el.focus(); el.setSelectionRange(keep.pos, keep.pos); }
     }
     lRenderBulk();
+    lDelUpdate();
   }
   const lResetAndRender = () => { lShow = L_PAGE; lRender(); };
   $("lQ").addEventListener("input", lResetAndRender);
