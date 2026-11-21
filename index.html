@@ -1008,6 +1008,7 @@
     <div class="lbar">
       <input id="lQ" type="text" placeholder="Search name, phone, city..." style="flex:1;min-width:200px">
       <select id="lStatus"><option value="">All status</option><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select>
+      <select id="lWeb"><option value="">Website: all</option><option value="yes">Has website</option><option value="no">No website</option><option value="unk">Not checked yet</option></select>
       <select id="lSort"><option value="rev">Most reviews</option><option value="rate">Highest rating</option><option value="name">Name A-Z</option></select>
       <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="lWa"> Only WhatsApp numbers</label>
     </div>
@@ -1369,34 +1370,43 @@
       let arr;
       try { arr = JSON.parse(r.result); } catch (e) { return lToastMsg("Not a valid JSON file"); }
       if (!Array.isArray(arr)) return lToastMsg("Expected a list of places");
-      const existing = new Set((await getDocs(collection(db, LCOL))).docs.map(d => d.id));
-      const rows = [];
+      const existingMap = new Map((await getDocs(collection(db, LCOL))).docs.map(d => [d.id, d.data()]));
+      const ops = [];          // [type, id, data]
+      let added = 0, updated = 0;
       arr.forEach(x => {
         const id = x.placeId, name = (x.title || "").trim();
-        if (!id || !name || existing.has(id)) return;
+        if (!id || !name) return;
+        const website = (x.website || "").trim();
+        if (existingMap.has(id)) {
+          // Already in the database: only refresh the website info (keeps status, notes, selections)
+          const cur = existingMap.get(id);
+          if (cur.website !== website || !cur.webChecked) { ops.push(["update", id, { website, webChecked: true }]); updated++; }
+          return;
+        }
         const pu = (x.phoneUnformatted || "").replace(/\s/g, "");
         const m = pu.match(/^\+91([6-9]\d{9})$/);
         const lead = {
           name, niche: x.categoryName || "Clinic", phone: pu.replace(/^\+91/, ""), mobile: m ? m[1] : "",
           address: x.address || "", city: x.city || "", rating: x.totalScore ?? null, reviews: x.reviewsCount || 0,
           hours: (x.openingHours || []).slice(0, 7).map(h => `${h.day.slice(0, 3)} ${h.hours}`).join(" · "),
-          maps: x.url || "", status: "New", notes: "", src: "apify", added: new Date().toLocaleDateString()
+          maps: x.url || "", website, webChecked: true,
+          status: "New", notes: "", src: "apify", added: new Date().toLocaleDateString()
         };
         lead.group = lGroupOf(lead);
-        rows.push([id, lead]);
+        ops.push(["set", id, lead]); added++;
       });
       // Firestore allows at most 500 writes per batch, so write in chunks of 400
-      for (let i = 0; i < rows.length; i += 400) {
+      for (let i = 0; i < ops.length; i += 400) {
         const b = writeBatch(db);
-        rows.slice(i, i + 400).forEach(([id, lead]) => b.set(doc(db, LCOL, id), lead));
+        ops.slice(i, i + 400).forEach(([type, id, data]) => type === "set" ? b.set(doc(db, LCOL, id), data) : b.update(doc(db, LCOL, id), data));
         await b.commit();
       }
-      const added = rows.length;
       const counts = {};
-      rows.forEach(([, l]) => { counts[l.group] = (counts[l.group] || 0) + 1; });
+      ops.filter(o => o[0] === "set").forEach(([, , l]) => { counts[l.group] = (counts[l.group] || 0) + 1; });
       window.__lSummary = Object.entries(counts).map(([g, n]) => g + " " + n).join(", ") || "none";
-      lToastMsg(`${added} new lead${added === 1 ? "" : "s"} added`);
-      $("lAMsg").textContent = `${added} new lead${added === 1 ? "" : "s"} imported (${window.__lSummary}). Duplicates were skipped.`;
+      window.__lUpdated = updated;
+      lToastMsg(`${added} new, ${window.__lUpdated} website info updated`);
+      $("lAMsg").textContent = `${added} new lead${added === 1 ? "" : "s"} imported (${window.__lSummary}). ${window.__lUpdated} existing leads got website info.`;
       $("lFile").value = "";
       } catch (e) {
         // Shows the real reason (usually Firestore rules blocking clinic_leads)
@@ -1481,7 +1491,9 @@
     }).join("");
 
     const q = $("lQ").value.trim().toLowerCase(), st = $("lStatus").value, onlyWa = $("lWa").checked, sort = $("lSort").value;
-    const all = lLeads.filter(l => (!lGroup || (l.group || lGroupOf(l)) === lGroup) && (!q || [l.name, l.phone, l.city, l.address].join(" ").toLowerCase().includes(q)) && (!st || l.status === st) && (!onlyWa || l.mobile));
+    const web = $("lWeb").value;
+    const webOk = l => web === "" || (web === "yes" && !!l.website) || (web === "no" && l.webChecked && !l.website) || (web === "unk" && !l.webChecked);
+    const all = lLeads.filter(l => (!lGroup || (l.group || lGroupOf(l)) === lGroup) && (!q || [l.name, l.phone, l.city, l.address].join(" ").toLowerCase().includes(q)) && (!st || l.status === st) && (!onlyWa || l.mobile) && webOk(l));
     all.sort((a, b) => sort === "rev" ? (b.reviews || 0) - (a.reviews || 0) : sort === "rate" ? (b.rating || 0) - (a.rating || 0) : String(a.name).localeCompare(String(b.name)));
     const list = all.slice(0, lShow);
     if (!all.length) { $("lList").innerHTML = '<div class="lempty">No leads here yet. Import an Apify file or change the category.</div>'; lRenderBulk(); return; }
@@ -1518,7 +1530,8 @@
             ${l.address ? `📍 ${esc(l.address)}<br>` : ""}
             ${l.hours ? `🕒 ${esc(l.hours)}<br>` : ""}
             ⭐ ${esc(rating)}<br>
-            ${l.maps ? `<a href="${esc(l.maps)}" target="_blank" rel="noopener" style="color:#0C7A6E;font-weight:600">Open in Maps</a>` : ""}
+            ${l.maps ? `<a href="${esc(l.maps)}" target="_blank" rel="noopener" style="color:#0C7A6E;font-weight:600">Open in Maps</a><br>` : ""}
+            ${l.website ? `🌐 <a href="${esc(l.website)}" target="_blank" rel="noopener" style="color:#0C7A6E;font-weight:600">${esc(l.website)}</a>` : (l.webChecked ? '<span style="color:#B3261E;font-weight:600">No website</span>' : '<span style="color:#9A6A00">Website not checked yet</span>')}
           </div>
         </div>` : ""}
       </div>`;
@@ -1535,6 +1548,7 @@
   $("lStatus").addEventListener("change", lResetAndRender);
   $("lSort").addEventListener("change", lResetAndRender);
   $("lWa").addEventListener("change", lResetAndRender);
+  $("lWeb").addEventListener("change", lResetAndRender);
   setInterval(() => {
     const w = lWait(), el = $("lCool");
     if (!el) return;
