@@ -524,6 +524,19 @@
   .lempty { color:#55706C; text-align:center; padding:30px; border:1px dashed #CFE0DC; border-radius:12px; }
   .ltoast { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#101815; color:#fff; padding:9px 14px; border-radius:8px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:60; }
   .ltoast.on { opacity:1; }
+
+  .lrow1 { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .lphone { color:#55706C; font-size:14px; margin-top:4px; }
+  .lpickwrap { flex-shrink:0; padding:4px; cursor:pointer; }
+  .lpickwrap input { width:18px; height:18px; cursor:pointer; }
+  .lmore { margin-top:10px; background:none; border:0; color:#0C7A6E; font:inherit; font-size:13px; font-weight:600; cursor:pointer; padding:0; }
+  .ldetails { margin-top:10px; padding-top:10px; border-top:1px dashed #DCE8E5; }
+  .lselall { margin:6px 0 10px; font-size:13px; color:#55706C; }
+  .lselall input { width:16px; height:16px; vertical-align:middle; }
+  .lbulk { display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#E3F4F1; border:1px solid #9FD6CB; border-radius:12px; padding:10px 12px; margin-bottom:12px; }
+  .lbulk.hidden { display:none; }
+  .lbulk select { padding:8px 10px; border:1px solid #CFE0DC; border-radius:8px; font:inherit; background:#fff; }
+  #lBulkCount { font-weight:700; color:#0F2A28; margin-right:auto; }
 </style>
 </head>
 <body>
@@ -548,7 +561,7 @@
 <div class="admin-bar hidden" id="adminBar" role="status">
   <div class="wrap">
     <span>Signed in as admin</span>
-    <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <a href="#leads">Clinic leads</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Log out</button></span>
+    <span><a href="#admin">Manage projects</a> &nbsp;·&nbsp; <a href="#leads">Leads</a> &nbsp;·&nbsp; <button id="adminBarLogout" type="button">Log out</button></span>
   </div>
 </div>
 
@@ -928,7 +941,7 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Admin</p>
-      <h2 class="display">Clinic leads.</h2>
+      <h2 class="display">Leads.</h2>
       <p>Clinic leads, status and notes sync live through Firestore. Only visible when signed in as admin.</p>
     </div>
     <div class="lstats">
@@ -973,6 +986,13 @@
       <select id="lStatus"><option value="">All status</option><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select>
       <select id="lSort"><option value="rev">Most reviews</option><option value="rate">Highest rating</option><option value="name">Name A-Z</option></select>
       <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="lWa"> Only WhatsApp numbers</label>
+    </div>
+    <div class="lselall"><label><input type="checkbox" id="lSelAllBox" onchange="lSelAllToggle(this.checked)"> Select all shown</label></div>
+    <div class="lbulk hidden" id="lBulk">
+      <span id="lBulkCount"></span>
+      <select id="lBulkStatus"><option>New</option><option>Contacted</option><option>Replied</option><option>Won</option><option>Rejected</option></select>
+      <button class="lbtn wa" type="button" onclick="lBulkApply()">Apply to selected</button>
+      <button class="lbtn" type="button" onclick="lBulkClear()">Clear</button>
     </div>
     <div id="lList" class="lcards"></div>
   </div>
@@ -1361,6 +1381,30 @@
     a.click();
   };
 
+  // Selection and expanded-details state survive re-renders
+  const lSel = new Set(), lOpen = new Set();
+  window.lToggleDetails = id => { lOpen.has(id) ? lOpen.delete(id) : lOpen.add(id); lRender(); };
+  window.lToggleSel = (id, on) => { on ? lSel.add(id) : lSel.delete(id); lRenderBulk(); };
+  window.lSelAllToggle = on => {
+    document.querySelectorAll("input.lpick").forEach(cb => { cb.checked = on; on ? lSel.add(cb.dataset.id) : lSel.delete(cb.dataset.id); });
+    lRenderBulk();
+  };
+  window.lBulkClear = () => { lSel.clear(); lRender(); };
+  window.lBulkApply = async () => {
+    const st = $("lBulkStatus").value, ids = [...lSel];
+    if (!ids.length) return lToastMsg("Select leads first");
+    const batch = writeBatch(db);
+    ids.forEach(id => batch.update(doc(db, LCOL, id), { status: st, updatedAt: Date.now() }));
+    try { await batch.commit(); lToastMsg(ids.length + " lead(s) set to " + st); lSel.clear(); lRender(); }
+    catch (e) { lToastMsg("Update failed: " + e.message); }
+  };
+  function lRenderBulk() {
+    const n = lSel.size, boxes = [...document.querySelectorAll("input.lpick")];
+    $("lBulk").classList.toggle("hidden", n === 0);
+    $("lBulkCount").textContent = n + " selected";
+    $("lSelAllBox").checked = boxes.length > 0 && boxes.every(cb => cb.checked);
+  }
+
   function lRender() {
     if ($("leads").classList.contains("hidden")) return;
     $("lS1").textContent = lLeads.length;
@@ -1369,6 +1413,8 @@
     $("lS4").textContent = lLeads.filter(l => l.status === "Replied").length;
     $("lS5").textContent = lLeads.filter(l => l.status === "Won").length;
     $("lS6").textContent = lSentToday() + "/" + L_DAILY;
+    // Drop selections for leads that no longer exist
+    [...lSel].forEach(id => { if (!lLeads.some(l => l.id === id)) lSel.delete(id); });
 
     // Keep the note being typed while the list refreshes
     const active = document.activeElement;
@@ -1377,34 +1423,42 @@
     const q = $("lQ").value.trim().toLowerCase(), st = $("lStatus").value, onlyWa = $("lWa").checked, sort = $("lSort").value;
     const list = lLeads.filter(l => (!q || [l.name, l.phone, l.city, l.address].join(" ").toLowerCase().includes(q)) && (!st || l.status === st) && (!onlyWa || l.mobile))
       .sort((a, b) => sort === "rev" ? (b.reviews || 0) - (a.reviews || 0) : sort === "rate" ? (b.rating || 0) - (a.rating || 0) : String(a.name).localeCompare(String(b.name)));
-    if (!list.length) { $("lList").innerHTML = '<div class="lempty">No leads yet. Import an Apify file or add one above.</div>'; return; }
+    if (!list.length) { $("lList").innerHTML = '<div class="lempty">No leads yet. Import an Apify file or add one above.</div>'; lRenderBulk(); return; }
 
     $("lList").innerHTML = list.map(l => {
-      const wa = lWaLink(l), w = lWait();
+      const id = esc(l.id), wa = lWaLink(l), w = lWait(), open = lOpen.has(l.id);
       const waBtn = !wa ? "" : w === 0
         ? `<a class="lbtn wa" href="${esc(wa)}" target="_blank" rel="noopener" onclick="return lCountSend();">WhatsApp chat</a>`
         : `<span class="lbtn off">${w === -1 ? "Daily limit reached" : "Wait " + lFmt(w)}</span>`;
       const rating = l.rating ? `★ ${Number(l.rating).toFixed(1)} · ${l.reviews || 0} reviews` : (l.reviews ? `${l.reviews} reviews` : "No rating");
       return `<div class="lcard" data-st="${esc(l.status)}">
-        <div class="lname">${esc(l.name)}</div>
-        <div>
-          <span class="lchip">${esc(l.niche)}</span>
-          ${l.mobile ? '<span class="lchip ok">WhatsApp number</span>' : (l.phone ? '<span class="lchip no">Landline / other</span>' : '<span class="lchip no">No phone</span>')}
-        </div>
-        <div class="lmeta">
-          ${l.phone ? `📞 <b>+91 ${esc(l.phone)}</b>` : "📞 <b>No number</b>"}<br>
-          ${l.address ? `📍 ${esc(l.address)}<br>` : ""}
-          ${l.hours ? `🕒 ${esc(l.hours)}<br>` : ""}
-          ⭐ ${esc(rating)}
+        <div class="lrow1">
+          <div>
+            <div class="lname">${esc(l.name)}</div>
+            <div class="lphone">${l.phone ? "📞 +91 " + esc(l.phone) : "No number"}</div>
+          </div>
+          <label class="lpickwrap" title="Select this lead"><input type="checkbox" class="lpick" data-id="${id}" ${lSel.has(l.id) ? "checked" : ""} onchange="lToggleSel('${id}', this.checked)"></label>
         </div>
         <div class="lacts">
-          <select onchange="lSetStatus('${esc(l.id)}', this.value)">${["New","Contacted","Replied","Won","Rejected"].map(s => `<option ${s === l.status ? "selected" : ""}>${s}</option>`).join("")}</select>
+          <select onchange="lSetStatus('${id}', this.value)">${["New","Contacted","Replied","Won","Rejected"].map(s => `<option ${s === l.status ? "selected" : ""}>${s}</option>`).join("")}</select>
           ${waBtn}
           ${l.phone ? `<a class="lbtn" href="tel:+91${esc(l.phone)}">Call</a>` : ""}
-          ${l.maps ? `<a class="lbtn" href="${esc(l.maps)}" target="_blank" rel="noopener">Maps</a>` : ""}
-          <button class="lbtn red" type="button" onclick="lDel('${esc(l.id)}')">Delete</button>
+          <button class="lbtn red" type="button" onclick="lDel('${id}')">Delete</button>
         </div>
-        <textarea class="lnote" rows="1" data-id="${esc(l.id)}" placeholder="Notes (owner name, follow-up date...)" oninput="lNoteInput('${esc(l.id)}', this.value)" onblur="lNoteSave('${esc(l.id)}', this.value)">${esc(l.notes || "")}</textarea>
+        <textarea class="lnote" rows="1" data-id="${id}" placeholder="Notes (owner name, follow-up date...)" oninput="lNoteInput('${id}', this.value)" onblur="lNoteSave('${id}', this.value)">${esc(l.notes || "")}</textarea>
+        <button class="lmore" type="button" onclick="lToggleDetails('${id}')">${open ? "Hide details ▴" : "Show details ▾"}</button>
+        ${open ? `<div class="ldetails">
+          <div>
+            <span class="lchip">${esc(l.niche)}</span>
+            ${l.mobile ? '<span class="lchip ok">WhatsApp number</span>' : (l.phone ? '<span class="lchip no">Landline / other</span>' : '<span class="lchip no">No phone</span>')}
+          </div>
+          <div class="lmeta">
+            ${l.address ? `📍 ${esc(l.address)}<br>` : ""}
+            ${l.hours ? `🕒 ${esc(l.hours)}<br>` : ""}
+            ⭐ ${esc(rating)}<br>
+            ${l.maps ? `<a href="${esc(l.maps)}" target="_blank" rel="noopener" style="color:#0C7A6E;font-weight:600">Open in Maps</a>` : ""}
+          </div>
+        </div>` : ""}
       </div>`;
     }).join("");
 
@@ -1412,6 +1466,7 @@
       const el = document.querySelector(`textarea.lnote[data-id="${CSS.escape(keep.id)}"]`);
       if (el) { el.value = keep.v; el.focus(); el.setSelectionRange(keep.pos, keep.pos); }
     }
+    lRenderBulk();
   }
   $("lQ").addEventListener("input", lRender);
   $("lStatus").addEventListener("change", lRender);
